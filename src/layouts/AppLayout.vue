@@ -67,6 +67,7 @@ import {
   NButton,
   NAvatar,
   NDropdown,
+  useMessage,
 } from "naive-ui";
 import { Component, h, inject, reactive, watch } from "vue";
 import { HomeOutlined as DashboardIcon } from "@vicons/antd";
@@ -78,6 +79,7 @@ function renderIcon(icon: Component) {
 }
 
 const cookies = inject('$cookies') as VueCookies;
+const message = useMessage();
 const route = useRoute();
 const router = useRouter();
 const navigator: any = reactive({
@@ -107,7 +109,8 @@ function dropdownHandler(key: string | number) {
   switch (key) {
     case "logout":
       cookies.remove("access_token");
-      router.go(0);
+      message.success("Logout successfully!");
+      setTimeout(() => router.go(0), 250)
       return;
     default:
       return;

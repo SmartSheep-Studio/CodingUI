@@ -3,7 +3,9 @@
     <n-config-provider>
       <n-message-provider>
         <n-notification-provider>
-          <router-view></router-view>
+          <network-detection>
+            <router-view></router-view>
+          </network-detection>
         </n-notification-provider>
       </n-message-provider>
     </n-config-provider>
@@ -16,6 +18,7 @@ import {
   NMessageProvider,
   NNotificationProvider,
 } from "naive-ui";
+import NetworkDetection from "./layouts/foundation/NetworkDetection.vue";
 </script>
 
 <style>
@@ -33,6 +36,11 @@ import {
 
 .container-size {
   min-height: calc(100vh - 70px - 60px);
+  min-width: 100vw;
+}
+
+.container-size-fluid {
+  min-height: 100vh;
   min-width: 100vw;
 }
 </style>

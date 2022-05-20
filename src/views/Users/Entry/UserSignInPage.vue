@@ -71,7 +71,7 @@ import { useRouter } from "vue-router";
 const axios = inject("axios") as Axios;
 const router = useRouter();
 const message = useMessage();
-const cookies = inject('$cookies') as VueCookies;
+const cookies = inject("$cookies") as VueCookies;
 const form = ref<FormInst | null>(null);
 const data = reactive({
   username: "",
@@ -108,9 +108,12 @@ function submit(event: MouseEvent) {
     });
 
     if (response.status == 200) {
-      message.success("Login successfully");
+      message.success("Login successfully!");
       cookies.set("access_token", response.data["Response"]);
-      router.back();
+      setTimeout(
+        () => router.push({ name: "Dashboard" }).then(() => router.go(0)),
+        500
+      );
     } else if (response.status == 400) {
       message.warning("Wrong username or password");
     } else {
