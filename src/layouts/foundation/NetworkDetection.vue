@@ -6,7 +6,7 @@
           <div id="title"><img src="../../assets/codingland_logo_text.svg" height="100" width="180"></div>
           <div id="description" style="font-size: 15px; color: #808080">
             <span v-if="status.step === 0">Establishing a connection to the neural network server</span>
-            <span v-if="status.step === 1">Pulling your profile</span>
+            <span v-if="status.step === 1">Fetching your profile</span>
           </div>
           <div id="progress" style="padding-top: 16px;">
             <n-spin size="small"></n-spin>
@@ -32,10 +32,17 @@
 </template>
 
 <script lang="ts" setup>
-import { Axios } from 'axios';
-import { NSpin } from 'naive-ui';
+import { Axios, AxiosResponse } from 'axios';
+import { NSpin, useMessage } from 'naive-ui';
 import { inject, onMounted, reactive } from 'vue';
+import { VueCookies } from 'vue-cookies';
+import { useRouter } from 'vue-router';
+import { useStatusStore } from '../../stores/status';
 
+const store = useStatusStore();
+const router = useRouter();
+const message = useMessage();
+const cookies = inject("$cookies") as VueCookies;
 const axios = inject("axios") as Axios;
 const status: any = reactive({
   connecting: true,
@@ -45,12 +52,36 @@ const status: any = reactive({
 })
 
 async function connect() {
-  const response = await axios.get("/api");
+  let response: AxiosResponse;
+  response = await axios.get("/api");
   if (response.data["Response"]["Services"] === "DOWN") {
     status.available = false
+    status.detail = response.data["Response"]
+    return
+  } else {
+    status.detail = response.data["Response"]
   }
-  status.detail = response.data["Response"];
-  status.connecting = false;
+  if (cookies.isKey("access_token")) {
+    status.step++
+    response = await axios.get("/api/security/users/profile?detail=yes", { headers: { Authorization: "Bearer " + cookies.get("access_token") } })
+    if (response.status === 401) {
+      message.error("Neuro memory lost, please sign in again!")
+      cookies.remove("access_token")
+      setTimeout(() => {
+        router.push({ name: "Dashboard" }).then(() => { router.go(0) })
+      }, 250)
+    } else {
+      const profile = response.data["Response"]
+      store.setUserProfile(profile["User"], profile["Group"], profile["Backpack"])
+      status.connecting = false
+    }
+  } else {
+    status.connecting = false
+  }
+}
+
+async function fetchUserProfile() {
+
 }
 
 onMounted(async () => {

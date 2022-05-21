@@ -109,15 +109,35 @@
               <li>Code Coins *80,000</li>
             </ol>
           </n-card>
+
+          <!-- Actions -->
           <n-grid :y-gap="8" style="padding-top: 12px">
             <n-gi :span="24">
-              <n-button style="width: 100%">Operation</n-button>
+              <n-button style="width: 100%" disabled>
+                <template #icon>
+                  <n-icon>
+                    <MessageFilled />
+                  </n-icon>
+                </template>Operation
+              </n-button>
             </n-gi>
             <n-gi :span="24">
-              <n-button style="width: 100%">Free Mode</n-button>
+              <n-button style="width: 100%">
+                <template #icon>
+                  <n-icon>
+                    <LayoutFilled />
+                  </n-icon>
+                </template>Free Mode
+              </n-button>
             </n-gi>
             <n-gi :span="24">
-              <n-button style="width: 100%">Mining Plant</n-button>
+              <n-button style="width: 100%">
+                <template #icon>
+                  <n-icon>
+                    <FireFilled />
+                  </n-icon>
+                </template>Mining Plant
+              </n-button>
             </n-gi>
           </n-grid>
         </n-card>
@@ -224,6 +244,9 @@ import {
   BulbFilled,
   DeploymentUnitOutlined,
   HeatMapOutlined,
+  MessageFilled,
+  LayoutFilled,
+  FireFilled,
 } from "@vicons/antd";
 import * as echarts from "echarts";
 import { onMounted, reactive } from "vue";
@@ -310,7 +333,7 @@ const chart: any = reactive({
         emphasis: {
           focus: "series",
         },
-        data: [220, 182, 191, 234, 290, 330, 310, 14, 1245, 144, 145, 1],
+        data: [220, 182, 191, 234, 290, 330, 310, 14, 291, 144, 145, 1],
       },
     ],
   },
