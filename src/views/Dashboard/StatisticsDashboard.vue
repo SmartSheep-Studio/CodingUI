@@ -2,35 +2,35 @@
   <div style="width: 100%">
     <n-grid :x-gap="16" :y-gap="16">
       <n-gi :span="15">
-        <n-card title="Statistics" style="height: 100%">
+        <n-card title="基本数据" style="height: 100%">
           <n-grid :y-gap="16">
             <!-- Currencies -->
             <n-gi :span="8">
-              <n-statistic label="Source Codes" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.SourceCodes"/>
+              <n-statistic label="源代码" tabular-nums>
+                <n-number-animation :from="0" :to="backpack.SourceCodes" />
                 <template #prefix>
                   <n-icon>
-                    <CodeSandboxCircleFilled/>
+                    <CodeSandboxCircleFilled />
                   </n-icon>
                 </template>
               </n-statistic>
             </n-gi>
             <n-gi :span="8">
-              <n-statistic label="Favourite Runes" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.FavouriteRunes"/>
+              <n-statistic label="推荐符文" tabular-nums>
+                <n-number-animation :from="0" :to="backpack.FavouriteRunes" />
                 <template #prefix>
                   <n-icon>
-                    <LikeFilled/>
+                    <LikeFilled />
                   </n-icon>
                 </template>
               </n-statistic>
             </n-gi>
             <n-gi :span="8">
-              <n-statistic label="Code Coins" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.CodeCoins"/>
+              <n-statistic label="逻辑币" tabular-nums>
+                <n-number-animation :from="0" :to="backpack.CodeCoins" />
                 <template #prefix>
                   <n-icon>
-                    <DollarCircleFilled/>
+                    <DollarCircleFilled />
                   </n-icon>
                 </template>
               </n-statistic>
@@ -38,33 +38,33 @@
 
             <!-- Player States -->
             <n-gi :span="8">
-              <n-statistic label="Rational" tabular-nums>
-                <n-number-animation :from="0" :to="86"/>
+              <n-statistic label="理智" tabular-nums>
+                <n-number-animation :from="0" :to="86" />
                 <template #prefix>
                   <n-icon>
-                    <BulbFilled/>
+                    <BulbFilled />
                   </n-icon>
                 </template>
                 <template #suffix> / 86</template>
               </n-statistic>
             </n-gi>
             <n-gi :span="8">
-              <n-statistic label="Energy" tabular-nums>
-                <n-number-animation :from="0" :to="1008"/>
+              <n-statistic label="电力" tabular-nums>
+                <n-number-animation :from="0" :to="1008" />
                 <template #prefix>
                   <n-icon>
-                    <DeploymentUnitOutlined/>
+                    <PowerSharp />
                   </n-icon>
                 </template>
                 <template #suffix> / 1290</template>
               </n-statistic>
             </n-gi>
             <n-gi :span="8">
-              <n-statistic label="Triangle Rune" tabular-nums>
-                <n-number-animation :from="0" :to="100"/>
+              <n-statistic label="闪现令牌" tabular-nums>
+                <n-number-animation :from="0" :to="100" />
                 <template #prefix>
                   <n-icon>
-                    <HeatMapOutlined/>
+                    <TicketSharp />
                   </n-icon>
                 </template>
                 <template #suffix> / 100</template>
@@ -73,40 +73,91 @@
 
             <!-- Statistics -->
             <n-gi :span="24">
-              <div id="statistics-chart" style="height: 310px; width: 100%; margin-top: 15px"></div>
+              <div
+                id="statistics-chart"
+                style="height: 310px; width: 100%; margin-top: 15px"
+              ></div>
             </n-gi>
           </n-grid>
         </n-card>
       </n-gi>
       <n-gi :span="9">
-        <n-card title="Experience Road" embedded style="height: 100%">
+        <n-card title="神经记忆" embedded style="height: 100%">
           <n-card>
             <n-grid>
-              <n-gi :span="10">
-                <n-progress type="circle" :percentage="90">
+              <n-gi :span="9">
+                <n-progress
+                  type="circle"
+                  size="large"
+                  :percentage="
+                    (store.profile.user['level_experience'] /
+                      (store.profile.user['level'] *
+                        store.node.details['Level']['Requirement'] *
+                        (store.profile.user['level'] *
+                          store.node.details['Level']['Difficulty']))) *
+                    100
+                  "
+                >
                   <div style="text-align: center">
-                    <span style="font-size: 22px">Rank <br/> <b>1st</b></span>
+                    <div style="font-size: 20px">
+                      Lv <b>{{ store.profile.user["level"] }}</b>
+                    </div>
+                    <span style="font-size: 14px">无尽深渊</span>
                   </div>
                 </n-progress>
               </n-gi>
-              <n-gi :span="14">
-                <ol>
-                  <li>LittleSheep (You)</li>
-                  <li>Deepsea</li>
-                  <li>我顶你个肺</li>
-                  <b>......</b>
-                </ol>
+              <n-gi :offset="2" :span="13">
+                <div style="padding-top: 10px">
+                  <n-avatar></n-avatar>
+                  <div style="font-size: 20px">
+                    <b style="line-height: 34px"
+                      >Dr. {{ store.profile.user["username"] }}</b
+                    >
+                  </div>
+                  <div>
+                    <span
+                      ><b>经验</b>
+                      {{ SimpleNumber(store.profile.user["level_experience"]) }}
+                      /
+                      {{
+                        SimpleNumber(
+                          store.profile.user["level"] *
+                            store.node.details["Level"]["Requirement"] *
+                            (store.profile.user["level"] *
+                              store.node.details["Level"]["Difficulty"])
+                        )
+                      }}</span
+                    >
+                    <br />
+                    <span>
+                      <b>节点</b> <span>{{ store.node.name }}</span>
+                    </span>
+                    <br />
+                    <span
+                      ><b>回忆起点</b>
+                      <span>{{
+                        new Date(
+                          store.profile.user["created_at"]
+                        ).toLocaleDateString()
+                      }}</span></span
+                    >
+                  </div>
+                </div>
               </n-gi>
             </n-grid>
           </n-card>
           <n-card style="margin-top: 16px">
-            <span>Season <b>ZERO</b> Will Ending After <b>39:59:01</b></span>
-            <br/>
+            <span
+              >赛季 <b>起源</b> 将会在
+              <b><n-countdown :duration="30 * 3600 * 1000" active /></b>
+              结束</span
+            >
+            <br />
             <ol>
-              <span style="font-size: 16px"><b>Your rewards</b></span>
-              <li>CodingLand ship model</li>
-              <li>Source Codes *100</li>
-              <li>Code Coins *80,000</li>
+              <span style="font-size: 14px"><b>你可以得到目前的奖励</b></span>
+              <li>码匠岛模型</li>
+              <li>源代码 x100</li>
+              <li>逻辑币 x80,000</li>
             </ol>
           </n-card>
 
@@ -116,104 +167,102 @@
               <n-button style="width: 100%" disabled>
                 <template #icon>
                   <n-icon>
-                    <MessageFilled/>
+                    <ShieldFilled />
                   </n-icon>
                 </template>
-                Operation
+                逻辑行动
               </n-button>
             </n-gi>
             <n-gi :span="24">
               <n-button style="width: 100%">
                 <template #icon>
                   <n-icon>
-                    <LayoutFilled/>
+                    <LayoutFilled />
                   </n-icon>
                 </template>
-                Free Mode
+                自由模式
               </n-button>
             </n-gi>
             <n-gi :span="24">
-              <n-button style="width: 100%">
+              <n-button style="width: 100%" disabled>
                 <template #icon>
                   <n-icon>
-                    <FireFilled/>
+                    <FireFilled />
                   </n-icon>
                 </template>
-                Mining Plant
+                地下大堂
               </n-button>
             </n-gi>
           </n-grid>
         </n-card>
       </n-gi>
       <n-gi :span="15">
-        <n-card title="Recent Activity" style="height: 100%">
+        <n-card title="近期活动" style="height: 100%">
           <n-list bordered>
             <n-list-item>
               <template #prefix>
                 <span>2021</span>
               </template>
-              <span>Collect <b>Source Codes *700</b> In Season <b>BETA</b></span>
-              <br/>
-              <span>Collect <b>Source Codes *10000</b> In Season <b>Alpha</b></span>
-              <br/>
-              <span>Collect <b>Source Codes *120</b> In
-                <b>Rougulike: Welding</b></span>
-              <br/>
-              <span>Collect <b>Source Codes *120</b> In
-                <b>Rougulike: Welding</b></span>
-              <br/>
-              <span>Collect <b>Source Codes *120</b> In
-                <b>Rougulike: Welding</b></span>
-              <br/>
-              <span>Collect <b>Source Codes *120</b> In
-                <b>Rougulike: Welding</b></span>
-              <br/>
-              <span>Collect <b>Source Codes *120</b> In
-                <b>Rougulike: Welding</b></span>
+              <span>在赛季 <b>起源</b> 中获得 <b>逻辑币 x1000</b></span>
+              <br />
+              <span>在赛季 <b>起源</b> 中获得 <b>逻辑币 x200</b></span>
             </n-list-item>
           </n-list>
         </n-card>
       </n-gi>
       <n-gi :span="9">
-        <n-card title="Announcements & Events" embedded>
+        <n-card title="节点通告" embedded>
           <n-card>
             <n-collapse>
-              <n-collapse-item title="ZERO 赛季开放" name="new-season-zero">
+              <n-collapse-item title="起源赛季开放" name="new-season-zero">
                 <template #header-extra>🥳</template>
                 <div>
-                  <span>经验之路 ZERO 赛季开放挑战！</span> <br/>
-                  <span>现在各位 Coder
+                  <span>经验之路 <b>起源</b> 赛季开放挑战！</span> <br />
+                  <span
+                    >现在各位逻辑博士
                     可以在个人仪表盘上看见现在的经验之路排名。经验之路排名仅限达到
-                    Lv50 及以上的 Coder 参加。赛季会在 2022/5/15 到 2022/7/1
-                    开放挑战。</span>
-                  <br/>
-                  <span>在挑战截止后我们会按照经验之路上的奖品发放到大家的 Bank
-                    中。并且等级会会滚到 Lv50
-                    MAX/MAX。等待下一次经验之路。</span>
+                    Lv50 及以上的博士参加。赛季会在 2022/5/15 到 2022/7/1
+                    开放挑战。</span
+                  >
                 </div>
               </n-collapse-item>
-              <n-collapse-item title="更新兑换规则" name="updatelogs-exchangerule">
+              <n-collapse-item
+                title="更新兑换规则"
+                name="updatelogs-exchangerule"
+              >
                 <template #header-extra>🤩</template>
                 <div>
                   <span>在 2022/5/1 之后的推荐点数兑换源代码规则变更</span>
-                  <br/>
-                  <span>兑换公式由原本的
+                  <br />
+                  <span
+                    >兑换公式由原本的
                     <code>推荐等数 *(2X 开发者等级) = 源代码 *1</code> 更改至
-                    <code>推荐等数 *500 = 源代码 *1</code></span>
-                  <br/>
-                  <span>顺便提醒：使用非法手段破坏此活动平衡者，<b>永久封号</b></span>
+                    <code>推荐等数 *500 = 源代码 *1</code></span
+                  >
+                  <br />
+                  <span
+                    >顺便提醒：使用非法手段破坏此活动平衡者，<b
+                      >永久封号</b
+                    ></span
+                  >
                 </div>
               </n-collapse-item>
               <n-collapse-item title="重构更新公告" name="updatelogs-refactor">
                 <template #header-extra>🚀</template>
                 <div>
-                  <span>LumbaShark 伦巴鲨现在已经停止更新，CodingLand
-                    将全盘替代（重构）</span>
-                  <br/>
-                  <span>详细公告 👉
-                    <n-a href="https://www.smartsheep.space/devlogs/codingland-devlog01/">传送门</n-a>
+                  <span
+                    >LumbaShark 伦巴鲨现在已经停止更新，CodingLand
+                    将全盘替代（重构）</span
+                  >
+                  <br />
+                  <span
+                    >详细公告 👉
+                    <n-a
+                      href="https://www.smartsheep.space/devlogs/codingland-devlog01/"
+                      >传送门</n-a
+                    >
                   </span>
-                  <br/>
+                  <br />
                 </div>
               </n-collapse-item>
             </n-collapse>
@@ -238,6 +287,8 @@ import {
   NListItem,
   NCollapse,
   NCollapseItem,
+  NCountdown,
+  NAvatar,
   NA,
 } from "naive-ui";
 import {
@@ -245,22 +296,23 @@ import {
   LikeFilled,
   DollarCircleFilled,
   BulbFilled,
-  DeploymentUnitOutlined,
-  HeatMapOutlined,
   MessageFilled,
   LayoutFilled,
   FireFilled,
 } from "@vicons/antd";
+import { TicketSharp } from "@vicons/ionicons5";
+import { PowerSharp, ShieldFilled } from "@vicons/material";
 import * as echarts from "echarts";
-import {onMounted, reactive, ref, watch} from "vue";
-import {useStatusStore} from "../../stores/status";
+import { onMounted, reactive, ref, watch } from "vue";
+import { useStatusStore } from "../../stores/status";
+import SimpleNumber from "../../utils/SimpleNumber";
 
 const store = useStatusStore();
 const backpack = ref({
-  SourceCodes: store.profile.backpack.materials['source-code'] ? store.profile.backpack.materials['source-code'].amount : 0,
-  FavouriteRunes: store.profile.backpack.materials['favourite-rune'] ? store.profile.backpack.materials['favourite-rune'].amount : 0,
-  CodeCoins: store.profile.backpack.materials['code-coin'] ? store.profile.backpack.materials['code-coin'].amount : 0,
-})
+  SourceCodes: store.getMaterial("source-code").amount,
+  FavouriteRunes: store.getMaterial("favourite-rune").amount,
+  CodeCoins: store.getMaterial("code-coin").amount,
+});
 
 // Charts
 const chart: any = reactive({
@@ -277,7 +329,7 @@ const chart: any = reactive({
       },
     },
     legend: {
-      data: ["Source Codes", "Recommend Points", "Code Coins"],
+      data: ["源代码", "推荐符文", "逻辑币"],
     },
     toolbox: {
       feature: {
@@ -317,7 +369,7 @@ const chart: any = reactive({
     ],
     series: [
       {
-        name: "Source Codes",
+        name: "源代码",
         type: "line",
         stack: "Total",
         areaStyle: {},
@@ -327,7 +379,7 @@ const chart: any = reactive({
         data: [120, 132, 101, 134, 90, 230, 210, 815, 145, 123, 224, 441],
       },
       {
-        name: "Recommend Points",
+        name: "推荐符文",
         type: "line",
         stack: "Total",
         areaStyle: {},
@@ -337,7 +389,7 @@ const chart: any = reactive({
         data: [220, 182, 191, 234, 991, 330, 415, 917, 57, 941, 294, 14],
       },
       {
-        name: "Code Coins",
+        name: "逻辑币",
         type: "line",
         stack: "Total",
         areaStyle: {},

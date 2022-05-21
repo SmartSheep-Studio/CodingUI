@@ -23,7 +23,7 @@
               <n-button
                 type="primary"
                 @click="$router.push({ name: 'User.Entry.SignIn' })"
-                >Sign In</n-button
+                >登入</n-button
               >
             </div>
             <div v-else>
@@ -32,7 +32,7 @@
                 @select="dropdownHandler"
                 :options="[
                   {
-                    label: 'Logout',
+                    label: '登出',
                     key: 'logout',
                   },
                 ]"
@@ -97,7 +97,7 @@ const navigator: any = reactive({
               },
             },
           },
-          { default: () => "Dashboard" }
+          { default: () => "仪表盘" }
         ),
       key: "Dashboard",
       icon: renderIcon(DashboardIcon),
