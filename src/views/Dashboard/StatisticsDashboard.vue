@@ -7,30 +7,30 @@
             <!-- Currencies -->
             <n-gi :span="8">
               <n-statistic label="Source Codes" tabular-nums>
-                <n-number-animation :from="0" :to="18561" />
+                <n-number-animation :from="0" :to="backpack.SourceCodes"/>
                 <template #prefix>
                   <n-icon>
-                    <CodeSandboxCircleFilled />
+                    <CodeSandboxCircleFilled/>
                   </n-icon>
                 </template>
               </n-statistic>
             </n-gi>
             <n-gi :span="8">
-              <n-statistic label="Recommend Points" tabular-nums>
-                <n-number-animation :from="0" :to="816154575" />
+              <n-statistic label="Favourite Runes" tabular-nums>
+                <n-number-animation :from="0" :to="backpack.FavouriteRunes"/>
                 <template #prefix>
                   <n-icon>
-                    <LikeFilled />
+                    <LikeFilled/>
                   </n-icon>
                 </template>
               </n-statistic>
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="Code Coins" tabular-nums>
-                <n-number-animation :from="0" :to="9456155525" />
+                <n-number-animation :from="0" :to="backpack.CodeCoins"/>
                 <template #prefix>
                   <n-icon>
-                    <DollarCircleFilled />
+                    <DollarCircleFilled/>
                   </n-icon>
                 </template>
               </n-statistic>
@@ -39,21 +39,21 @@
             <!-- Player States -->
             <n-gi :span="8">
               <n-statistic label="Rational" tabular-nums>
-                <n-number-animation :from="0" :to="86" />
+                <n-number-animation :from="0" :to="86"/>
                 <template #prefix>
                   <n-icon>
-                    <BulbFilled />
+                    <BulbFilled/>
                   </n-icon>
                 </template>
-                <template #suffix> / 86 </template>
+                <template #suffix> / 86</template>
               </n-statistic>
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="Energy" tabular-nums>
-                <n-number-animation :from="0" :to="1008" />
+                <n-number-animation :from="0" :to="1008"/>
                 <template #prefix>
                   <n-icon>
-                    <DeploymentUnitOutlined />
+                    <DeploymentUnitOutlined/>
                   </n-icon>
                 </template>
                 <template #suffix> / 1290</template>
@@ -61,10 +61,10 @@
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="Triangle Rune" tabular-nums>
-                <n-number-animation :from="0" :to="100" />
+                <n-number-animation :from="0" :to="100"/>
                 <template #prefix>
                   <n-icon>
-                    <HeatMapOutlined />
+                    <HeatMapOutlined/>
                   </n-icon>
                 </template>
                 <template #suffix> / 100</template>
@@ -85,7 +85,7 @@
               <n-gi :span="10">
                 <n-progress type="circle" :percentage="90">
                   <div style="text-align: center">
-                    <span style="font-size: 22px">Rank <br /> <b>1st</b></span>
+                    <span style="font-size: 22px">Rank <br/> <b>1st</b></span>
                   </div>
                 </n-progress>
               </n-gi>
@@ -101,7 +101,7 @@
           </n-card>
           <n-card style="margin-top: 16px">
             <span>Season <b>ZERO</b> Will Ending After <b>39:59:01</b></span>
-            <br />
+            <br/>
             <ol>
               <span style="font-size: 16px"><b>Your rewards</b></span>
               <li>CodingLand ship model</li>
@@ -116,27 +116,30 @@
               <n-button style="width: 100%" disabled>
                 <template #icon>
                   <n-icon>
-                    <MessageFilled />
+                    <MessageFilled/>
                   </n-icon>
-                </template>Operation
+                </template>
+                Operation
               </n-button>
             </n-gi>
             <n-gi :span="24">
               <n-button style="width: 100%">
                 <template #icon>
                   <n-icon>
-                    <LayoutFilled />
+                    <LayoutFilled/>
                   </n-icon>
-                </template>Free Mode
+                </template>
+                Free Mode
               </n-button>
             </n-gi>
             <n-gi :span="24">
               <n-button style="width: 100%">
                 <template #icon>
                   <n-icon>
-                    <FireFilled />
+                    <FireFilled/>
                   </n-icon>
-                </template>Mining Plant
+                </template>
+                Mining Plant
               </n-button>
             </n-gi>
           </n-grid>
@@ -150,21 +153,21 @@
                 <span>2021</span>
               </template>
               <span>Collect <b>Source Codes *700</b> In Season <b>BETA</b></span>
-              <br />
+              <br/>
               <span>Collect <b>Source Codes *10000</b> In Season <b>Alpha</b></span>
-              <br />
+              <br/>
               <span>Collect <b>Source Codes *120</b> In
                 <b>Rougulike: Welding</b></span>
-              <br />
+              <br/>
               <span>Collect <b>Source Codes *120</b> In
                 <b>Rougulike: Welding</b></span>
-              <br />
+              <br/>
               <span>Collect <b>Source Codes *120</b> In
                 <b>Rougulike: Welding</b></span>
-              <br />
+              <br/>
               <span>Collect <b>Source Codes *120</b> In
                 <b>Rougulike: Welding</b></span>
-              <br />
+              <br/>
               <span>Collect <b>Source Codes *120</b> In
                 <b>Rougulike: Welding</b></span>
             </n-list-item>
@@ -178,12 +181,12 @@
               <n-collapse-item title="ZERO 赛季开放" name="new-season-zero">
                 <template #header-extra>🥳</template>
                 <div>
-                  <span>经验之路 ZERO 赛季开放挑战！</span> <br />
+                  <span>经验之路 ZERO 赛季开放挑战！</span> <br/>
                   <span>现在各位 Coder
                     可以在个人仪表盘上看见现在的经验之路排名。经验之路排名仅限达到
                     Lv50 及以上的 Coder 参加。赛季会在 2022/5/15 到 2022/7/1
                     开放挑战。</span>
-                  <br />
+                  <br/>
                   <span>在挑战截止后我们会按照经验之路上的奖品发放到大家的 Bank
                     中。并且等级会会滚到 Lv50
                     MAX/MAX。等待下一次经验之路。</span>
@@ -193,11 +196,11 @@
                 <template #header-extra>🤩</template>
                 <div>
                   <span>在 2022/5/1 之后的推荐点数兑换源代码规则变更</span>
-                  <br />
+                  <br/>
                   <span>兑换公式由原本的
                     <code>推荐等数 *(2X 开发者等级) = 源代码 *1</code> 更改至
                     <code>推荐等数 *500 = 源代码 *1</code></span>
-                  <br />
+                  <br/>
                   <span>顺便提醒：使用非法手段破坏此活动平衡者，<b>永久封号</b></span>
                 </div>
               </n-collapse-item>
@@ -206,11 +209,11 @@
                 <div>
                   <span>LumbaShark 伦巴鲨现在已经停止更新，CodingLand
                     将全盘替代（重构）</span>
-                  <br />
+                  <br/>
                   <span>详细公告 👉
                     <n-a href="https://www.smartsheep.space/devlogs/codingland-devlog01/">传送门</n-a>
                   </span>
-                  <br />
+                  <br/>
                 </div>
               </n-collapse-item>
             </n-collapse>
@@ -249,7 +252,15 @@ import {
   FireFilled,
 } from "@vicons/antd";
 import * as echarts from "echarts";
-import { onMounted, reactive } from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
+import {useStatusStore} from "../../stores/status";
+
+const store = useStatusStore();
+const backpack = ref({
+  SourceCodes: store.profile.backpack.materials['source-code'] ? store.profile.backpack.materials['source-code'].amount : 0,
+  FavouriteRunes: store.profile.backpack.materials['favourite-rune'] ? store.profile.backpack.materials['favourite-rune'].amount : 0,
+  CodeCoins: store.profile.backpack.materials['code-coin'] ? store.profile.backpack.materials['code-coin'].amount : 0,
+})
 
 // Charts
 const chart: any = reactive({

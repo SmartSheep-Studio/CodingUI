@@ -110,7 +110,7 @@ function dropdownHandler(key: string | number) {
     case "logout":
       cookies.remove("access_token");
       message.success("Logout successfully!");
-      setTimeout(() => router.go(0), 250)
+      setTimeout(() => router.go(0), 300)
       return;
     default:
       return;
