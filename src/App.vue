@@ -35,12 +35,7 @@ import NetworkDetection from "./layouts/foundation/NetworkDetection.vue";
 }
 
 .container-size {
-  min-height: calc(100vh - 70px - 60px);
-  min-width: 100vw;
-}
-
-.container-size-fluid {
-  min-height: 100vh;
+  min-height: calc(100vh - 70px);
   min-width: 100vw;
 }
 </style>

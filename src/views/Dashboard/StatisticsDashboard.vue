@@ -7,30 +7,30 @@
             <!-- Currencies -->
             <n-gi :span="8">
               <n-statistic label="源代码" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.SourceCodes" />
+                <n-number-animation :from="0" :to="backpack.SourceCodes"/>
                 <template #prefix>
                   <n-icon>
-                    <CodeSandboxCircleFilled />
+                    <CodeSandboxCircleFilled/>
                   </n-icon>
                 </template>
               </n-statistic>
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="推荐符文" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.FavouriteRunes" />
+                <n-number-animation :from="0" :to="backpack.FavouriteRunes"/>
                 <template #prefix>
                   <n-icon>
-                    <LikeFilled />
+                    <LikeFilled/>
                   </n-icon>
                 </template>
               </n-statistic>
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="逻辑币" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.CodeCoins" />
+                <n-number-animation :from="0" :to="backpack.CodeCoins"/>
                 <template #prefix>
                   <n-icon>
-                    <DollarCircleFilled />
+                    <DollarCircleFilled/>
                   </n-icon>
                 </template>
               </n-statistic>
@@ -39,10 +39,10 @@
             <!-- Player States -->
             <n-gi :span="8">
               <n-statistic label="理智" tabular-nums>
-                <n-number-animation :from="0" :to="86" />
+                <n-number-animation :from="0" :to="86"/>
                 <template #prefix>
                   <n-icon>
-                    <BulbFilled />
+                    <BulbFilled/>
                   </n-icon>
                 </template>
                 <template #suffix> / 86</template>
@@ -50,10 +50,10 @@
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="电力" tabular-nums>
-                <n-number-animation :from="0" :to="1008" />
+                <n-number-animation :from="0" :to="1008"/>
                 <template #prefix>
                   <n-icon>
-                    <PowerSharp />
+                    <PowerSharp/>
                   </n-icon>
                 </template>
                 <template #suffix> / 1290</template>
@@ -61,10 +61,10 @@
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="闪现令牌" tabular-nums>
-                <n-number-animation :from="0" :to="100" />
+                <n-number-animation :from="0" :to="100"/>
                 <template #prefix>
                   <n-icon>
-                    <TicketSharp />
+                    <TicketSharp/>
                   </n-icon>
                 </template>
                 <template #suffix> / 100</template>
@@ -74,8 +74,8 @@
             <!-- Statistics -->
             <n-gi :span="24">
               <div
-                id="statistics-chart"
-                style="height: 310px; width: 100%; margin-top: 15px"
+                  id="statistics-chart"
+                  style="height: 310px; width: 100%; margin-top: 15px"
               ></div>
             </n-gi>
           </n-grid>
@@ -87,9 +87,9 @@
             <n-grid>
               <n-gi :span="9">
                 <n-progress
-                  type="circle"
-                  size="large"
-                  :percentage="
+                    type="circle"
+                    size="large"
+                    :percentage="
                     (store.profile.user['level_experience'] /
                       (store.profile.user['level'] *
                         store.node.details['Level']['Requirement'] *
@@ -111,35 +111,35 @@
                   <n-avatar></n-avatar>
                   <div style="font-size: 20px">
                     <b style="line-height: 34px"
-                      >Dr. {{ store.profile.user["username"] }}</b
+                    >Dr. {{ store.profile.user["username"] }}</b
                     >
                   </div>
                   <div>
                     <span
-                      ><b>经验</b>
+                    ><b>经验</b>
                       {{ SimpleNumber(store.profile.user["level_experience"]) }}
                       /
                       {{
                         SimpleNumber(
-                          store.profile.user["level"] *
+                            store.profile.user["level"] *
                             store.node.details["Level"]["Requirement"] *
                             (store.profile.user["level"] *
-                              store.node.details["Level"]["Difficulty"])
+                                store.node.details["Level"]["Difficulty"])
                         )
                       }}</span
                     >
-                    <br />
+                    <br/>
                     <span>
                       <b>节点</b> <span>{{ store.node.name }}</span>
                     </span>
-                    <br />
+                    <br/>
                     <span
-                      ><b>回忆起点</b>
+                    ><b>回忆起点&nbsp;</b>
                       <span>{{
-                        new Date(
-                          store.profile.user["created_at"]
-                        ).toLocaleDateString()
-                      }}</span></span
+                          new Date(
+                              store.profile.user["created_at"]
+                          ).toLocaleDateString()
+                        }}</span></span
                     >
                   </div>
                 </div>
@@ -148,11 +148,11 @@
           </n-card>
           <n-card style="margin-top: 16px">
             <span
-              >赛季 <b>起源</b> 将会在
-              <b><n-countdown :duration="30 * 3600 * 1000" active /></b>
+            >赛季 <b>起源</b> 将会在
+              <b><n-countdown :duration="30 * 3600 * 1000" active/></b>
               结束</span
             >
-            <br />
+            <br/>
             <ol>
               <span style="font-size: 14px"><b>你可以得到目前的奖励</b></span>
               <li>码匠岛模型</li>
@@ -167,7 +167,7 @@
               <n-button style="width: 100%" disabled>
                 <template #icon>
                   <n-icon>
-                    <ShieldFilled />
+                    <ShieldFilled/>
                   </n-icon>
                 </template>
                 逻辑行动
@@ -177,7 +177,7 @@
               <n-button style="width: 100%">
                 <template #icon>
                   <n-icon>
-                    <LayoutFilled />
+                    <LayoutFilled/>
                   </n-icon>
                 </template>
                 自由模式
@@ -187,7 +187,7 @@
               <n-button style="width: 100%" disabled>
                 <template #icon>
                   <n-icon>
-                    <FireFilled />
+                    <FireFilled/>
                   </n-icon>
                 </template>
                 地下大堂
@@ -204,7 +204,7 @@
                 <span>2021</span>
               </template>
               <span>在赛季 <b>起源</b> 中获得 <b>逻辑币 x1000</b></span>
-              <br />
+              <br/>
               <span>在赛季 <b>起源</b> 中获得 <b>逻辑币 x200</b></span>
             </n-list-item>
           </n-list>
@@ -217,9 +217,9 @@
               <n-collapse-item title="起源赛季开放" name="new-season-zero">
                 <template #header-extra>🥳</template>
                 <div>
-                  <span>经验之路 <b>起源</b> 赛季开放挑战！</span> <br />
+                  <span>经验之路 <b>起源</b> 赛季开放挑战！</span> <br/>
                   <span
-                    >现在各位逻辑博士
+                  >现在各位逻辑博士
                     可以在个人仪表盘上看见现在的经验之路排名。经验之路排名仅限达到
                     Lv50 及以上的博士参加。赛季会在 2022/5/15 到 2022/7/1
                     开放挑战。</span
@@ -227,23 +227,23 @@
                 </div>
               </n-collapse-item>
               <n-collapse-item
-                title="更新兑换规则"
-                name="updatelogs-exchangerule"
+                  title="更新兑换规则"
+                  name="updatelogs-exchangerule"
               >
                 <template #header-extra>🤩</template>
                 <div>
                   <span>在 2022/5/1 之后的推荐点数兑换源代码规则变更</span>
-                  <br />
+                  <br/>
                   <span
-                    >兑换公式由原本的
+                  >兑换公式由原本的
                     <code>推荐等数 *(2X 开发者等级) = 源代码 *1</code> 更改至
                     <code>推荐等数 *500 = 源代码 *1</code></span
                   >
-                  <br />
+                  <br/>
                   <span
-                    >顺便提醒：使用非法手段破坏此活动平衡者，<b
-                      >永久封号</b
-                    ></span
+                  >顺便提醒：使用非法手段破坏此活动平衡者，<b
+                  >永久封号</b
+                  ></span
                   >
                 </div>
               </n-collapse-item>
@@ -251,18 +251,18 @@
                 <template #header-extra>🚀</template>
                 <div>
                   <span
-                    >LumbaShark 伦巴鲨现在已经停止更新，CodingLand
+                  >LumbaShark 伦巴鲨现在已经停止更新，CodingLand
                     将全盘替代（重构）</span
                   >
-                  <br />
+                  <br/>
                   <span
-                    >详细公告 👉
+                  >详细公告 👉
                     <n-a
-                      href="https://www.smartsheep.space/devlogs/codingland-devlog01/"
-                      >传送门</n-a
+                        href="https://www.smartsheep.space/devlogs/codingland-devlog01/"
+                    >传送门</n-a
                     >
                   </span>
-                  <br />
+                  <br/>
                 </div>
               </n-collapse-item>
             </n-collapse>
@@ -300,11 +300,11 @@ import {
   LayoutFilled,
   FireFilled,
 } from "@vicons/antd";
-import { TicketSharp } from "@vicons/ionicons5";
-import { PowerSharp, ShieldFilled } from "@vicons/material";
+import {TicketSharp} from "@vicons/ionicons5";
+import {PowerSharp, ShieldFilled} from "@vicons/material";
 import * as echarts from "echarts";
-import { onMounted, reactive, ref, watch } from "vue";
-import { useStatusStore } from "../../stores/status";
+import {onMounted, reactive, ref, watch} from "vue";
+import {useStatusStore} from "../../stores/status";
 import SimpleNumber from "../../utils/SimpleNumber";
 
 const store = useStatusStore();
