@@ -15,7 +15,7 @@
             <!-- Currencies -->
             <n-gi :span="8">
               <n-statistic label="源代码" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.SourceCodes"/>
+                <n-number-animation :from="0" :to="backpack.data.SourceCodes"/>
                 <template #prefix>
                   <n-icon>
                     <CodeSandboxCircleFilled/>
@@ -25,7 +25,7 @@
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="推荐符文" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.FavouriteRunes"/>
+                <n-number-animation :from="0" :to="backpack.data.FavouriteRunes"/>
                 <template #prefix>
                   <n-icon>
                     <LikeFilled/>
@@ -35,7 +35,7 @@
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="逻辑币" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.CodeCoins"/>
+                <n-number-animation :from="0" :to="backpack.data.CodeCoins"/>
                 <template #prefix>
                   <n-icon>
                     <DollarCircleFilled/>
@@ -47,7 +47,7 @@
             <!-- Player States -->
             <n-gi :span="8">
               <n-statistic label="理智" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.Rational"/>
+                <n-number-animation :from="0" :to="backpack.data.Rational"/>
                 <template #prefix>
                   <n-icon>
                     <BulbFilled/>
@@ -58,7 +58,7 @@
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="能量" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.Energy"/>
+                <n-number-animation :from="0" :to="backpack.data.Energy"/>
                 <template #prefix>
                   <n-icon>
                     <PowerSharp/>
@@ -69,7 +69,7 @@
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="分享令牌" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.ShareTicket"/>
+                <n-number-animation :from="0" :to="backpack.data.ShareTicket"/>
                 <template #prefix>
                   <n-icon>
                     <TicketSharp/>
@@ -300,12 +300,12 @@
         <span>下次签到开放时间在 <b>{{ new Date(new Date().setHours(24, 0, 0, 0)).toLocaleString() }}</b></span>
       </div>
       <template #footer>
-        <n-space justify="end" v-if="dailySignin.rewards == null">
+        <n-space v-if="dailySignin.rewards == null" justify="end">
           <n-button :loading="dailySignin.connecting" size="small" type="primary" @click="dailySignin.do()">立即签到
           </n-button>
         </n-space>
-        <n-space justify="end" v-else>
-          <n-button size="small" type="primary" @click="$router.go(0)">更新数据
+        <n-space v-else justify="end">
+          <n-button size="small" type="primary" @click="dailySignin.display = !dailySignin.display">签到成功
           </n-button>
         </n-space>
       </template>
@@ -357,14 +357,20 @@ const cookies = inject("$cookies") as VueCookies;
 const axios = inject("axios") as Axios;
 const message = useMessage();
 const store = useStatusStore();
-const backpack = ref({
-  SourceCodes: store.getMaterial("source-code").amount,
-  FavouriteRunes: store.getMaterial("favourite-rune").amount,
-  CodeCoins: store.getMaterial("code-coin").amount,
-  Rational: store.getMaterial("rational").amount,
-  Energy: store.getMaterial("energy").amount,
-  ShareTicket: store.getMaterial("share-ticket").amount,
+const backpack: any = reactive({
+  data: {},
+  init() {
+    backpack.data = {
+      SourceCodes: store.getMaterial("source-code").amount,
+      FavouriteRunes: store.getMaterial("favourite-rune").amount,
+      CodeCoins: store.getMaterial("code-coin").amount,
+      Rational: store.getMaterial("rational").amount,
+      Energy: store.getMaterial("energy").amount,
+      ShareTicket: store.getMaterial("share-ticket").amount,
+    }
+  }
 });
+
 const dailySignin = reactive({
   display: false,
   connecting: false,
@@ -396,6 +402,10 @@ const dailySignin = reactive({
     dailySignin.connecting = false;
   }
 })
+
+watch(store.profile, () => {
+  backpack.init()
+}, {immediate: true, deep: true})
 
 // Charts
 const chart: any = reactive({
