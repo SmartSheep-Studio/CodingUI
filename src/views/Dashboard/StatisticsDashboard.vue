@@ -2,7 +2,15 @@
   <div style="width: 100%">
     <n-grid :x-gap="16" :y-gap="16">
       <n-gi :span="15">
-        <n-card title="基本数据" style="height: 100%">
+        <n-card style="height: 100%" title="基本数据">
+          <template #header-extra>
+            <n-button
+                :disabled="new Date(store.profile.user['last_signin_at']).toDateString() === new Date().toDateString()"
+                type="primary"
+                @click="dailySignin.display = !dailySignin.display">
+              每日签到
+            </n-button>
+          </template>
           <n-grid :y-gap="16">
             <!-- Currencies -->
             <n-gi :span="8">
@@ -39,35 +47,35 @@
             <!-- Player States -->
             <n-gi :span="8">
               <n-statistic label="理智" tabular-nums>
-                <n-number-animation :from="0" :to="86"/>
+                <n-number-animation :from="0" :to="backpack.Rational"/>
                 <template #prefix>
                   <n-icon>
                     <BulbFilled/>
                   </n-icon>
                 </template>
-                <template #suffix> / 86</template>
+                <template #suffix> / {{ 86 + (store.profile.user["level"] - 1) * 2 }}</template>
               </n-statistic>
             </n-gi>
             <n-gi :span="8">
-              <n-statistic label="电力" tabular-nums>
-                <n-number-animation :from="0" :to="1008"/>
+              <n-statistic label="能量" tabular-nums>
+                <n-number-animation :from="0" :to="backpack.Energy"/>
                 <template #prefix>
                   <n-icon>
                     <PowerSharp/>
                   </n-icon>
                 </template>
-                <template #suffix> / 1290</template>
+                <template #suffix> / {{ 20 + (store.profile.user["level"] - 1) * 8 }}</template>
               </n-statistic>
             </n-gi>
             <n-gi :span="8">
-              <n-statistic label="闪现令牌" tabular-nums>
-                <n-number-animation :from="0" :to="100"/>
+              <n-statistic label="分享令牌" tabular-nums>
+                <n-number-animation :from="0" :to="backpack.ShareTicket"/>
                 <template #prefix>
                   <n-icon>
                     <TicketSharp/>
                   </n-icon>
                 </template>
-                <template #suffix> / 100</template>
+                <template #suffix> / {{ 10 + (store.profile.user["level"] - 1) }}</template>
               </n-statistic>
             </n-gi>
 
@@ -82,21 +90,18 @@
         </n-card>
       </n-gi>
       <n-gi :span="9">
-        <n-card title="神经记忆" embedded style="height: 100%">
+        <n-card embedded style="height: 100%" title="神经记忆">
           <n-card>
             <n-grid>
               <n-gi :span="9">
                 <n-progress
-                    type="circle"
-                    size="large"
                     :percentage="
                     (store.profile.user['level_experience'] /
-                      (store.profile.user['level'] *
-                        store.node.details['Level']['Requirement'] *
-                        (store.profile.user['level'] *
-                          store.node.details['Level']['Difficulty']))) *
-                    100
-                  "
+                      UpgradeRequireCompute(store.profile.user['level'], store.node.details['Level']['Requirement'], store.node.details['Level']['Difficulty'])) *
+                100
+                "
+                    size="large"
+                    type="circle"
                 >
                   <div style="text-align: center">
                     <div style="font-size: 20px">
@@ -120,12 +125,7 @@
                       {{ SimpleNumber(store.profile.user["level_experience"]) }}
                       /
                       {{
-                        SimpleNumber(
-                            store.profile.user["level"] *
-                            store.node.details["Level"]["Requirement"] *
-                            (store.profile.user["level"] *
-                                store.node.details["Level"]["Difficulty"])
-                        )
+                        SimpleNumber(UpgradeRequireCompute(store.profile.user["level"], store.node.details["Level"]["Requirement"], store.node.details["Level"]["Difficulty"]))
                       }}</span
                     >
                     <br/>
@@ -164,7 +164,7 @@
           <!-- Actions -->
           <n-grid :y-gap="8" style="padding-top: 12px">
             <n-gi :span="24">
-              <n-button style="width: 100%" disabled>
+              <n-button disabled style="width: 100%">
                 <template #icon>
                   <n-icon>
                     <ShieldFilled/>
@@ -184,7 +184,7 @@
               </n-button>
             </n-gi>
             <n-gi :span="24">
-              <n-button style="width: 100%" disabled>
+              <n-button disabled style="width: 100%">
                 <template #icon>
                   <n-icon>
                     <FireFilled/>
@@ -197,7 +197,7 @@
         </n-card>
       </n-gi>
       <n-gi :span="15">
-        <n-card title="近期活动" style="height: 100%">
+        <n-card style="height: 100%" title="近期活动">
           <n-list bordered>
             <n-list-item>
               <template #prefix>
@@ -211,10 +211,10 @@
         </n-card>
       </n-gi>
       <n-gi :span="9">
-        <n-card title="节点通告" embedded>
+        <n-card embedded title="节点通告">
           <n-card>
             <n-collapse>
-              <n-collapse-item title="起源赛季开放" name="new-season-zero">
+              <n-collapse-item name="new-season-zero" title="起源赛季开放">
                 <template #header-extra>🥳</template>
                 <div>
                   <span>经验之路 <b>起源</b> 赛季开放挑战！</span> <br/>
@@ -227,8 +227,8 @@
                 </div>
               </n-collapse-item>
               <n-collapse-item
-                  title="更新兑换规则"
                   name="updatelogs-exchangerule"
+                  title="更新兑换规则"
               >
                 <template #header-extra>🤩</template>
                 <div>
@@ -247,7 +247,7 @@
                   >
                 </div>
               </n-collapse-item>
-              <n-collapse-item title="重构更新公告" name="updatelogs-refactor">
+              <n-collapse-item name="updatelogs-refactor" title="重构更新公告">
                 <template #header-extra>🚀</template>
                 <div>
                   <span
@@ -270,6 +270,46 @@
         </n-card>
       </n-gi>
     </n-grid>
+
+    <!-- Modals -->
+    <n-modal v-model:show="dailySignin.display"
+             preset="card" style="max-width: 540px" title="签到恢复">
+      <template #header-extra>
+        {{ new Date().toLocaleDateString() }}
+      </template>
+      <div v-if="dailySignin.rewards == null">
+        <span>更具您目前的神经记忆档案，您的这次签到的奖励为：</span> <br>
+        <ol>
+          <li>逻辑币 0 ~ {{ store.profile.user["level"] * 100 + 2000 }}</li>
+          <li>理智 {{ 86 + (store.profile.user["level"] - 1) * 2 }}</li>
+          <li>能量 {{ 20 + (store.profile.user["level"] - 1) * 8 }}</li>
+          <li>分享令牌 {{ 10 + store.profile.user["level"] - 1 }}</li>
+          <li>经验 1800</li>
+        </ol>
+        <span><b>温馨提示</b> 若是使用了外置电源或静脉注射理智等恢复属性类药物，在签到恢复完成后溢出的效果将不复存在</span>
+      </div>
+      <div v-else>
+        <span>签到完成 d(^_^o)，本次签到获得奖励：</span>
+        <ol>
+          <li>逻辑币 {{ dailySignin.rewards["CodeCoin"] }}</li>
+          <li>理智 {{ dailySignin.rewards["Rational"] }}</li>
+          <li>能量 {{ dailySignin.rewards["Energy"] }}</li>
+          <li>分享令牌 {{ dailySignin.rewards["ShareTicket"] }}</li>
+          <li>经验 {{ dailySignin.rewards["Experience"] }}</li>
+        </ol>
+        <span>下次签到开放时间在 <b>{{ new Date(new Date().setHours(24, 0, 0, 0)).toLocaleString() }}</b></span>
+      </div>
+      <template #footer>
+        <n-space justify="end" v-if="dailySignin.rewards == null">
+          <n-button :loading="dailySignin.connecting" size="small" type="primary" @click="dailySignin.do()">立即签到
+          </n-button>
+        </n-space>
+        <n-space justify="end" v-else>
+          <n-button size="small" type="primary" @click="$router.go(0)">更新数据
+          </n-button>
+        </n-space>
+      </template>
+    </n-modal>
   </div>
 </template>
 
@@ -289,7 +329,10 @@ import {
   NCollapseItem,
   NCountdown,
   NAvatar,
+  NModal,
+  NSpace,
   NA,
+  useMessage,
 } from "naive-ui";
 import {
   CodeSandboxCircleFilled,
@@ -303,16 +346,56 @@ import {
 import {TicketSharp} from "@vicons/ionicons5";
 import {PowerSharp, ShieldFilled} from "@vicons/material";
 import * as echarts from "echarts";
-import {onMounted, reactive, ref, watch} from "vue";
+import {inject, onMounted, reactive, ref, watch} from "vue";
 import {useStatusStore} from "../../stores/status";
 import SimpleNumber from "../../utils/SimpleNumber";
+import UpgradeRequireCompute from "../../utils/UpgradeRequireCompute";
+import {Axios, AxiosResponse} from "axios";
+import {VueCookies} from "vue-cookies";
 
+const cookies = inject("$cookies") as VueCookies;
+const axios = inject("axios") as Axios;
+const message = useMessage();
 const store = useStatusStore();
 const backpack = ref({
   SourceCodes: store.getMaterial("source-code").amount,
   FavouriteRunes: store.getMaterial("favourite-rune").amount,
   CodeCoins: store.getMaterial("code-coin").amount,
+  Rational: store.getMaterial("rational").amount,
+  Energy: store.getMaterial("energy").amount,
+  ShareTicket: store.getMaterial("share-ticket").amount,
 });
+const dailySignin = reactive({
+  display: false,
+  connecting: false,
+  rewards: null,
+  do: async () => {
+    dailySignin.connecting = true;
+    let response: AxiosResponse
+    // Do Daily SignIn
+    response = await axios.patch("/api/security/users/signin", {}, {
+      headers: {Authorization: "Bearer " + cookies.get("access_token")},
+    });
+    if (response.status === 200) {
+      dailySignin.rewards = response.data["Response"]
+    } else {
+      message.error("无法进行神经签到，未知通信错误");
+      dailySignin.connecting = false;
+      return;
+    }
+    // Update profile
+    response = await axios.get("/api/security/users/profile?detail=yes", {
+      headers: {Authorization: "Bearer " + cookies.get("access_token")},
+    });
+    const profile = response.data["Response"];
+    store.setUserProfile(
+        profile["User"],
+        profile["Group"],
+        profile["Backpack"]
+    );
+    dailySignin.connecting = false;
+  }
+})
 
 // Charts
 const chart: any = reactive({

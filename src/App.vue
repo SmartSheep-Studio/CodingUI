@@ -3,9 +3,11 @@
     <n-config-provider>
       <n-message-provider>
         <n-notification-provider>
-          <network-detection>
-            <router-view></router-view>
-          </network-detection>
+          <n-dialog-provider>
+            <network-detection>
+              <router-view></router-view>
+            </network-detection>
+          </n-dialog-provider>
         </n-notification-provider>
       </n-message-provider>
     </n-config-provider>
@@ -17,6 +19,7 @@ import {
   NConfigProvider,
   NMessageProvider,
   NNotificationProvider,
+  NDialogProvider,
 } from "naive-ui";
 import NetworkDetection from "./layouts/foundation/NetworkDetection.vue";
 </script>

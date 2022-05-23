@@ -26,8 +26,7 @@
     </div>
     <div v-else-if="status.error">
       <div
-          class="container-size-fluid"
-          style="display: flex; align-items: center"
+          style="display: flex; align-items: center; height: 100vh; width: 100vw;"
       >
         <div style="margin: auto; text-align: center">
           <div id="title">
@@ -51,8 +50,7 @@
     </div>
     <div v-else>
       <div
-          class="container-size-fluid"
-          style="display: flex; align-items: center"
+          style="display: flex; align-items: center; height: 100vh; width: 100vw;"
       >
         <div style="margin: auto; text-align: center">
           <div id="title">
