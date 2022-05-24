@@ -18,13 +18,13 @@
             <n-form-item label="Username" path="username">
               <n-input
                   v-model:value="data.username"
-                  placeholder="Your username or email"
+                  placeholder="Your username"
               ></n-input>
             </n-form-item>
             <n-form-item label="Email" path="email">
               <n-input
                   v-model:value="data.email"
-                  placeholder="Your password again"
+                  placeholder="Your email address"
                   type="email"
               ></n-input>
             </n-form-item>

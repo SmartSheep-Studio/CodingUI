@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    <div v-else-if="status.error">
+    <div v-else-if="status.error.isHappened">
       <div
           style="display: flex; align-items: center; height: 100vh; width: 100vw;"
       >
@@ -37,9 +37,9 @@
             />
           </div>
           <div id="description" style="font-size: 15px">
-            <span>无法检测到神经网络节点生命活动迹象，请检查通信桥梁是否正常 😣</span>
+            <span>{{ status.error.detail }}</span>
             <div style="padding-top: 12px">
-              <span style="color: #808080">通信错误 💥</span>
+              <span style="color: #808080">{{ status.error.summary }}</span>
             </div>
           </div>
         </div>
@@ -75,7 +75,7 @@
 <script lang="ts" setup>
 import {Axios, AxiosResponse} from "axios";
 import {NSpin, useMessage} from "naive-ui";
-import {inject, onMounted, reactive} from "vue";
+import {inject, onMounted, reactive, watch} from "vue";
 import {VueCookies} from "vue-cookies";
 import {useRouter} from "vue-router";
 import {useStatusStore} from "../../stores/status";
@@ -88,7 +88,11 @@ const axios = inject("axios") as Axios;
 const status: any = reactive({
   connecting: true,
   available: true,
-  error: false,
+  error: {
+    isHappened: false,
+    summary: "",
+    detail: "",
+  },
   detail: {},
   step: 0,
 });
@@ -97,6 +101,9 @@ async function connect() {
   try {
     let response: AxiosResponse;
     response = await axios.get("/api", {timeout: 3000});
+    if (response.data["Response"] == null) {
+      return
+    }
     if (response.data["Response"]["Services"] === "DOWN") {
       status.available = false;
       status.detail = response.data["Response"];
@@ -110,34 +117,58 @@ async function connect() {
     }
     if (cookies.isKey("access_token")) {
       status.step++;
-      response = await axios.get("/api/security/users/profile?detail=yes", {
-        headers: {Authorization: "Bearer " + cookies.get("access_token")},
-      });
-      if (response.status === 401) {
-        message.error("神经授权失效，请重新验证身份");
-        cookies.remove("access_token");
-        router.push({name: "User.Entry.SignIn"});
-      } else {
-        const profile = response.data["Response"];
-        store.setUserProfile(
-            profile["User"],
-            profile["Group"],
-            profile["Backpack"]
-        );
-        status.connecting = false;
-      }
+      await fetchUserProfile()
     } else {
       status.connecting = false;
     }
   } catch (error) {
-    status.error = true;
+    console.log(error)
+    status.error.isHappened = true;
+    status.error.summary = "通信错误 💥";
+    status.error.detail = "无法检测到神经网络节点生命活动迹象，请检查通信桥梁是否正常 😣";
   } finally {
     status.connecting = false;
   }
 }
 
 async function fetchUserProfile() {
+  const response = await axios.get("/api/security/users/profile?detail=yes", {
+    headers: {Authorization: "Bearer " + cookies.get("access_token")},
+  });
+  if (response.status === 401) {
+    message.error("神经授权失效，请重新验证身份");
+    cookies.remove("access_token");
+    router.push({name: "User.Entry.SignIn"});
+  } else {
+    const profile = response.data["Response"];
+    store.setUserProfile(
+        profile["User"],
+        profile["Group"],
+        profile["Backpack"]
+    );
+    status.connecting = false;
+  }
 }
+
+axios.interceptors.response.use((response) => {
+  if (response.status === 429) {
+    store.isDefenseNow(false);
+    status.error.isHappened = true;
+    status.error.summary = "神经连接被拒 🚧";
+    status.error.detail = "有时候，喝杯茶，休息一下也不为过 ♨️";
+  }
+  return response;
+})
+
+watch(store.node, () => {
+  if (store.node.defense) {
+    console.warn("[DEFENSE] Neural nodes automatically activate defense.");
+    status.error.isHappened = true;
+    status.error.summary = "神经连接被拒 🚧";
+    status.error.detail = "有时候，喝杯茶，休息一下也不为过 ♨️";
+    store.isDefenseNow(false);
+  }
+})
 
 onMounted(async () => {
   await connect();

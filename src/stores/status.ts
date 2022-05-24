@@ -11,6 +11,7 @@ export const useStatusStore = defineStore("status", {
       node: {
         name: null,
         details: null,
+        defense: false,
       }
     }
   },
@@ -24,6 +25,10 @@ export const useStatusStore = defineStore("status", {
     setNodeInformation(name: string, details: object) {
       this.node.name = name
       this.node.details = details
+    },
+
+    isDefenseNow(defense: boolean) {
+      this.node.defense = defense;
     },
 
     getMaterial(id: string) {

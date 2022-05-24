@@ -197,17 +197,17 @@
         </n-card>
       </n-gi>
       <n-gi :span="15">
-        <n-card style="height: 100%" title="近期活动">
-          <n-list bordered>
-            <n-list-item>
-              <template #prefix>
-                <span>2021</span>
-              </template>
-              <span>在赛季 <b>起源</b> 中获得 <b>逻辑币 x1000</b></span>
-              <br/>
-              <span>在赛季 <b>起源</b> 中获得 <b>逻辑币 x200</b></span>
-            </n-list-item>
-          </n-list>
+        <n-card style="height: 100%" title="活动记录">
+          <n-timeline>
+            <template v-for="(item, index) in activities.data" :key="index">
+              <n-timeline-item v-if="item['type'] === 'daily-signin'"
+                               :time="new Date(item.created_at).toLocaleString()" title="每日签到"
+                               type="success"/>
+              <n-timeline-item v-if="item['type'] === 'signin'"
+                               :time="new Date(item.created_at).toLocaleString()" title="链接神经身份" :content="'尝试连接于 ' + item['data']['at']"
+                               type="info"/>
+            </template>
+          </n-timeline>
         </n-card>
       </n-gi>
       <n-gi :span="9">
@@ -280,7 +280,7 @@
       <div v-if="dailySignin.rewards == null">
         <span>更具您目前的神经记忆档案，您的这次签到的奖励为：</span> <br>
         <ol>
-          <li>逻辑币 0 ~ {{ store.profile.user["level"] * 100 + 2000 }}</li>
+          <li>逻辑币 0 ~ {{ store.profile.user["level"] * 10 + 200 }}</li>
           <li>理智 {{ 86 + (store.profile.user["level"] - 1) * 2 }}</li>
           <li>能量 {{ 20 + (store.profile.user["level"] - 1) * 8 }}</li>
           <li>分享令牌 {{ 10 + store.profile.user["level"] - 1 }}</li>
@@ -323,11 +323,11 @@ import {
   NIcon,
   NButton,
   NProgress,
-  NList,
-  NListItem,
   NCollapse,
   NCollapseItem,
   NCountdown,
+  NTimeline,
+  NTimelineItem,
   NAvatar,
   NModal,
   NSpace,
@@ -405,6 +405,22 @@ const dailySignin = reactive({
 
 watch(store.profile, () => {
   backpack.init()
+}, {immediate: true, deep: true})
+
+const activities = reactive({
+  data: [],
+  fetch: async () => {
+    const response = await axios.get("/api/records", {headers: {Authorization: "Bearer " + cookies.get("access_token")}});
+    if (response.status != 200) {
+      message.error("无法获取神经记忆活动记录")
+      return;
+    }
+    activities.data = response.data["Response"];
+  }
+})
+
+watch(store.profile, async () => {
+  await activities.fetch()
 }, {immediate: true, deep: true})
 
 // Charts
