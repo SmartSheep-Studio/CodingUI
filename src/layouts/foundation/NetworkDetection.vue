@@ -139,6 +139,11 @@ async function fetchUserProfile() {
     message.error("神经授权失效，请重新验证身份");
     cookies.remove("access_token");
     router.push({name: "User.Entry.SignIn"});
+  } else if (response.data["Response"]["Lock"] != null) {
+    status.error.isHappened = true;
+    status.error.summary = "神经档案被锁定，无法使用 🔒";
+    status.error.detail = response.data["Response"]["Lock"]["description"];
+    cookies.remove("access_token");
   } else {
     const profile = response.data["Response"];
     store.setUserProfile(
