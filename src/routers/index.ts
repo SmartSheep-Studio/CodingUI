@@ -3,11 +3,27 @@ import * as VueRouter from "vue-router"
 export default VueRouter.createRouter({
     history: VueRouter.createWebHashHistory(),
     routes: [
-        {path: "/", component: () => import("../layouts/AppLayout.vue"), children: [
-            {path: "", name: "Dashboard", component: () => import("../views/Dashboard/DashboardPage.vue")},
+        {
+            path: "/", component: () => import("../layouts/AppLayout.vue"), children: [
+                {path: "", name: "Dashboard", component: () => import("../views/Dashboard/DashboardPage.vue")},
 
-            {path: "user/entry/signin", name: "User.Entry.SignIn", component: () => import("../views/Users/Entry/UserSignInPage.vue")},
-            {path: "user/entry/signup", name: "User.Entry.SignUp", component: () => import("../views/Users/Entry/UserSignUpPage.vue")},
-        ]},
+                {
+                    path: "user/entry/signin",
+                    name: "User.Entry.SignIn",
+                    component: () => import("../views/Users/Entry/UserSignInPage.vue")
+                },
+                {
+                    path: "user/entry/signup",
+                    name: "User.Entry.SignUp",
+                    component: () => import("../views/Users/Entry/UserSignUpPage.vue")
+                },
+
+                {
+                    path: "game/operation/orders",
+                    name: "Game.Operation.Orders",
+                    component: () => import("../views/Game/Operation/OrderListPage.vue")
+                },
+            ]
+        },
     ]
 })

@@ -167,20 +167,20 @@
               <n-button disabled style="width: 100%">
                 <template #icon>
                   <n-icon>
-                    <ShieldFilled/>
+                    <DatabaseFilled/>
                   </n-icon>
                 </template>
-                逻辑行动
+                基础建设
               </n-button>
             </n-gi>
             <n-gi :span="24">
-              <n-button style="width: 100%">
+              <n-button style="width: 100%" @click="$router.push({name: 'Game.Operation.Orders'})">
                 <template #icon>
                   <n-icon>
                     <LayoutFilled/>
                   </n-icon>
                 </template>
-                自由模式
+                逻辑行动
               </n-button>
             </n-gi>
             <n-gi :span="24">
@@ -190,7 +190,7 @@
                     <FireFilled/>
                   </n-icon>
                 </template>
-                地下大堂
+                海口码头
               </n-button>
             </n-gi>
           </n-grid>
@@ -199,70 +199,35 @@
       <n-gi :span="15">
         <n-card style="height: 100%" title="活动记录">
           <n-timeline>
-            <template v-for="(item, index) in activities.data" :key="index">
+            <template
+                v-for="(item, index) in activities.data.slice((activities.page - 1) * 10, (activities.page - 1) * 10 + 10)"
+                :key="index">
               <n-timeline-item v-if="item['type'] === 'daily-signin'"
                                :time="new Date(item.created_at).toLocaleString()" title="每日签到"
                                type="success"/>
               <n-timeline-item v-if="item['type'] === 'signin'"
-                               :time="new Date(item.created_at).toLocaleString()" title="链接神经身份" :content="'尝试连接于 ' + item['data']['at']"
+                               :content="'尝试连接于 ' + item['data']['at']"
+                               :time="new Date(item.created_at).toLocaleString()"
+                               title="链接神经身份"
                                type="info"/>
             </template>
           </n-timeline>
+          <n-divider></n-divider>
+          <n-space justify="center">
+            <n-pagination v-model:page="activities.page" :page-count="Math.ceil(activities.data.length / 10)"/>
+          </n-space>
         </n-card>
       </n-gi>
       <n-gi :span="9">
         <n-card embedded title="节点通告">
           <n-card>
             <n-collapse>
-              <n-collapse-item name="new-season-zero" title="起源赛季开放">
-                <template #header-extra>🥳</template>
-                <div>
-                  <span>经验之路 <b>起源</b> 赛季开放挑战！</span> <br/>
-                  <span
-                  >现在各位逻辑博士
-                    可以在个人仪表盘上看见现在的经验之路排名。经验之路排名仅限达到
-                    Lv50 及以上的博士参加。赛季会在 2022/5/15 到 2022/7/1
-                    开放挑战。</span
-                  >
-                </div>
-              </n-collapse-item>
-              <n-collapse-item
-                  name="updatelogs-exchangerule"
-                  title="更新兑换规则"
-              >
-                <template #header-extra>🤩</template>
-                <div>
-                  <span>在 2022/5/1 之后的推荐点数兑换源代码规则变更</span>
-                  <br/>
-                  <span
-                  >兑换公式由原本的
-                    <code>推荐等数 *(2X 开发者等级) = 源代码 *1</code> 更改至
-                    <code>推荐等数 *500 = 源代码 *1</code></span
-                  >
-                  <br/>
-                  <span
-                  >顺便提醒：使用非法手段破坏此活动平衡者，<b
-                  >永久封号</b
-                  ></span
-                  >
-                </div>
-              </n-collapse-item>
-              <n-collapse-item name="updatelogs-refactor" title="重构更新公告">
-                <template #header-extra>🚀</template>
-                <div>
-                  <span
-                  >LumbaShark 伦巴鲨现在已经停止更新，CodingLand
-                    将全盘替代（重构）</span
-                  >
-                  <br/>
-                  <span
-                  >详细公告 👉
-                    <n-a
-                        href="https://www.smartsheep.space/devlogs/codingland-devlog01/"
-                    >传送门</n-a
-                    >
-                  </span>
-                  <br/>
+              <n-collapse-item v-for="(item, index) in activities.announcements" :key="index" :name="item['data']['id']"
+                               :title="item['data']['title']">
+                <template #header-extra>
+                  <span v-if="item['type'] === 'update'">📆</span>
+                </template>
+                <div v-html="item['data']['content']">
                 </div>
               </n-collapse-item>
             </n-collapse>
@@ -331,6 +296,8 @@ import {
   NAvatar,
   NModal,
   NSpace,
+  NPagination,
+  NDivider,
   NA,
   useMessage,
 } from "naive-ui";
@@ -339,12 +306,12 @@ import {
   LikeFilled,
   DollarCircleFilled,
   BulbFilled,
-  MessageFilled,
+  DatabaseFilled,
   LayoutFilled,
   FireFilled,
 } from "@vicons/antd";
 import {TicketSharp} from "@vicons/ionicons5";
-import {PowerSharp, ShieldFilled} from "@vicons/material";
+import {PowerSharp} from "@vicons/material";
 import * as echarts from "echarts";
 import {inject, onMounted, reactive, ref, watch} from "vue";
 import {useStatusStore} from "../../stores/status";
@@ -379,7 +346,7 @@ const dailySignin = reactive({
     dailySignin.connecting = true;
     let response: AxiosResponse
     // Do Daily SignIn
-    response = await axios.patch("/api/security/users/signin", {}, {
+    response = await axios.patch("/api/security/users/daily-signin", {}, {
       headers: {Authorization: "Bearer " + cookies.get("access_token")},
     });
     if (response.status === 200) {
@@ -409,13 +376,23 @@ watch(store.profile, () => {
 
 const activities = reactive({
   data: [],
+  announcements: [],
+  page: 1,
   fetch: async () => {
-    const response = await axios.get("/api/records", {headers: {Authorization: "Bearer " + cookies.get("access_token")}});
+    let response: AxiosResponse;
+    response = await axios.get("/api/records/announcements", {headers: {Authorization: "Bearer " + cookies.get("access_token")}});
+    if (response.status != 200) {
+      message.error("无法获取神经节点通告")
+    } else {
+      activities.announcements = response.data["Response"];
+    }
+
+    response = await axios.get("/api/records/activities", {headers: {Authorization: "Bearer " + cookies.get("access_token")}});
     if (response.status != 200) {
       message.error("无法获取神经记忆活动记录")
-      return;
+    } else {
+      activities.data = response.data["Response"];
     }
-    activities.data = response.data["Response"];
   }
 })
 
