@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <n-config-provider>
+    <n-config-provider :hljs="hljs">
       <n-message-provider>
         <n-notification-provider>
           <n-dialog-provider>
@@ -22,6 +22,7 @@ import {
   NDialogProvider,
 } from "naive-ui";
 import NetworkDetection from "./layouts/foundation/NetworkDetection.vue";
+import hljs from 'highlight.js/lib/core'
 </script>
 
 <style>

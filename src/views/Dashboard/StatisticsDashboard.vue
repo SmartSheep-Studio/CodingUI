@@ -5,9 +5,10 @@
         <n-card style="height: 100%" title="基本数据">
           <template #header-extra>
             <n-button
-                :disabled="new Date(store.profile.user['last_signin_at']).toDateString() === new Date().toDateString()"
-                type="primary"
-                @click="dailySignin.display = !dailySignin.display">
+              :disabled="new Date(store.profile.user['last_signin_at']).toDateString() === new Date().toDateString()"
+              type="primary"
+              @click="dailySignin.display = !dailySignin.display"
+            >
               每日签到
             </n-button>
           </template>
@@ -15,30 +16,30 @@
             <!-- Currencies -->
             <n-gi :span="8">
               <n-statistic label="源代码" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.data.SourceCodes"/>
+                <n-number-animation :from="0" :to="backpack.data.SourceCodes" />
                 <template #prefix>
                   <n-icon>
-                    <CodeSandboxCircleFilled/>
+                    <CodeSandboxCircleFilled />
                   </n-icon>
                 </template>
               </n-statistic>
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="推荐符文" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.data.FavouriteRunes"/>
+                <n-number-animation :from="0" :to="backpack.data.FavouriteRunes" />
                 <template #prefix>
                   <n-icon>
-                    <LikeFilled/>
+                    <LikeFilled />
                   </n-icon>
                 </template>
               </n-statistic>
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="逻辑币" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.data.CodeCoins"/>
+                <n-number-animation :from="0" :to="backpack.data.CodeCoins" />
                 <template #prefix>
                   <n-icon>
-                    <DollarCircleFilled/>
+                    <DollarCircleFilled />
                   </n-icon>
                 </template>
               </n-statistic>
@@ -47,10 +48,10 @@
             <!-- Player States -->
             <n-gi :span="8">
               <n-statistic label="理智" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.data.Rational"/>
+                <n-number-animation :from="0" :to="backpack.data.Rational" />
                 <template #prefix>
                   <n-icon>
-                    <BulbFilled/>
+                    <BulbFilled />
                   </n-icon>
                 </template>
                 <template #suffix> / {{ 86 + (store.profile.user["level"] - 1) * 2 }}</template>
@@ -58,10 +59,10 @@
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="能量" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.data.Energy"/>
+                <n-number-animation :from="0" :to="backpack.data.Energy" />
                 <template #prefix>
                   <n-icon>
-                    <PowerSharp/>
+                    <PowerSharp />
                   </n-icon>
                 </template>
                 <template #suffix> / {{ 20 + (store.profile.user["level"] - 1) * 8 }}</template>
@@ -69,10 +70,10 @@
             </n-gi>
             <n-gi :span="8">
               <n-statistic label="分享令牌" tabular-nums>
-                <n-number-animation :from="0" :to="backpack.data.ShareTicket"/>
+                <n-number-animation :from="0" :to="backpack.data.ShareTicket" />
                 <template #prefix>
                   <n-icon>
-                    <TicketSharp/>
+                    <TicketSharp />
                   </n-icon>
                 </template>
                 <template #suffix> / {{ 10 + (store.profile.user["level"] - 1) }}</template>
@@ -81,10 +82,7 @@
 
             <!-- Statistics -->
             <n-gi :span="24">
-              <div
-                  id="statistics-chart"
-                  style="height: 310px; width: 100%; margin-top: 15px"
-              ></div>
+              <div id="statistics-chart" style="height: 310px; width: 100%; margin-top: 15px"></div>
             </n-gi>
           </n-grid>
         </n-card>
@@ -95,13 +93,17 @@
             <n-grid>
               <n-gi :span="9">
                 <n-progress
-                    :percentage="
+                  :percentage="
                     (store.profile.user['level_experience'] /
-                      UpgradeRequireCompute(store.profile.user['level'], store.node.details['Level']['Requirement'], store.node.details['Level']['Difficulty'])) *
-                100
-                "
-                    size="large"
-                    type="circle"
+                      UpgradeRequireCompute(
+                        store.profile.user['level'],
+                        store.node.details['Level']['Requirement'],
+                        store.node.details['Level']['Difficulty']
+                      )) *
+                    100
+                  "
+                  size="large"
+                  type="circle"
                 >
                   <div style="text-align: center">
                     <div style="font-size: 20px">
@@ -115,31 +117,31 @@
                 <div style="padding-top: 10px">
                   <n-avatar></n-avatar>
                   <div style="font-size: 20px">
-                    <b style="line-height: 34px"
-                    >Dr. {{ store.profile.user["username"] }}</b
-                    >
+                    <b style="line-height: 34px">Dr. {{ store.profile.user["username"] }}</b>
                   </div>
                   <div>
                     <span
-                    ><b>经验</b>
+                      ><b>经验</b>
                       {{ SimpleNumber(store.profile.user["level_experience"]) }}
                       /
                       {{
-                        SimpleNumber(UpgradeRequireCompute(store.profile.user["level"], store.node.details["Level"]["Requirement"], store.node.details["Level"]["Difficulty"]))
+                        SimpleNumber(
+                          UpgradeRequireCompute(
+                            store.profile.user["level"],
+                            store.node.details["Level"]["Requirement"],
+                            store.node.details["Level"]["Difficulty"]
+                          )
+                        )
                       }}</span
                     >
-                    <br/>
+                    <br />
                     <span>
                       <b>节点</b> <span>{{ store.node.name }}</span>
                     </span>
-                    <br/>
+                    <br />
                     <span
-                    ><b>回忆起点&nbsp;</b>
-                      <span>{{
-                          new Date(
-                              store.profile.user["created_at"]
-                          ).toLocaleDateString()
-                        }}</span></span
+                      ><b>回忆起点&nbsp;</b>
+                      <span>{{ new Date(store.profile.user["created_at"]).toLocaleDateString() }}</span></span
                     >
                   </div>
                 </div>
@@ -148,11 +150,11 @@
           </n-card>
           <n-card style="margin-top: 16px">
             <span
-            >赛季 <b>起源</b> 将会在
-              <b><n-countdown :duration="30 * 3600 * 1000" active/></b>
+              >赛季 <b>起源</b> 将会在
+              <b><n-countdown :duration="30 * 3600 * 1000" active /></b>
               结束</span
             >
-            <br/>
+            <br />
             <ol>
               <span style="font-size: 14px"><b>你可以得到目前的奖励</b></span>
               <li>码匠岛模型</li>
@@ -167,17 +169,17 @@
               <n-button disabled style="width: 100%">
                 <template #icon>
                   <n-icon>
-                    <DatabaseFilled/>
+                    <DatabaseFilled />
                   </n-icon>
                 </template>
                 基础建设
               </n-button>
             </n-gi>
             <n-gi :span="24">
-              <n-button style="width: 100%" @click="$router.push({name: 'Game.Operation.Orders'})">
+              <n-button style="width: 100%" @click="$router.push({ name: 'Operation.Orders' })">
                 <template #icon>
                   <n-icon>
-                    <LayoutFilled/>
+                    <LayoutFilled />
                   </n-icon>
                 </template>
                 逻辑行动
@@ -187,7 +189,7 @@
               <n-button disabled style="width: 100%">
                 <template #icon>
                   <n-icon>
-                    <FireFilled/>
+                    <FireFilled />
                   </n-icon>
                 </template>
                 海口码头
@@ -200,21 +202,30 @@
         <n-card style="height: 100%" title="活动记录">
           <n-timeline>
             <template
-                v-for="(item, index) in activities.data.slice((activities.page - 1) * 10, (activities.page - 1) * 10 + 10)"
-                :key="index">
-              <n-timeline-item v-if="item['type'] === 'daily-signin'"
-                               :time="new Date(item.created_at).toLocaleString()" title="每日签到"
-                               type="success"/>
-              <n-timeline-item v-if="item['type'] === 'signin'"
-                               :content="'尝试连接于 ' + item['data']['at']"
-                               :time="new Date(item.created_at).toLocaleString()"
-                               title="链接神经身份"
-                               type="info"/>
+              v-for="(item, index) in activities.data.slice(
+                (activities.page - 1) * 10,
+                (activities.page - 1) * 10 + 10
+              )"
+              :key="index"
+            >
+              <n-timeline-item
+                v-if="item['type'] === 'daily-signin'"
+                :time="new Date(item['created_at']).toLocaleString()"
+                title="每日签到"
+                type="success"
+              />
+              <n-timeline-item
+                v-if="item['type'] === 'signin'"
+                :content="'尝试连接于 ' + item['data']['at']"
+                :time="new Date(item['created_at']).toLocaleString()"
+                title="链接神经身份"
+                type="info"
+              />
             </template>
           </n-timeline>
           <n-divider></n-divider>
           <n-space justify="center">
-            <n-pagination v-model:page="activities.page" :page-count="Math.ceil(activities.data.length / 10)"/>
+            <n-pagination v-model:page="activities.page" :page-count="Math.ceil(activities.data.length / 10)" />
           </n-space>
         </n-card>
       </n-gi>
@@ -222,13 +233,16 @@
         <n-card embedded title="节点通告">
           <n-card>
             <n-collapse>
-              <n-collapse-item v-for="(item, index) in activities.announcements" :key="index" :name="item['data']['id']"
-                               :title="item['data']['title']">
+              <n-collapse-item
+                v-for="(item, index) in activities.announcements"
+                :key="index"
+                :name="item['data']['id']"
+                :title="item['data']['title']"
+              >
                 <template #header-extra>
                   <span v-if="item['type'] === 'update'">📆</span>
                 </template>
-                <div v-html="item['data']['content']">
-                </div>
+                <div v-html="item['data']['content']"></div>
               </n-collapse-item>
             </n-collapse>
           </n-card>
@@ -237,13 +251,12 @@
     </n-grid>
 
     <!-- Modals -->
-    <n-modal v-model:show="dailySignin.display"
-             preset="card" style="max-width: 540px" title="签到恢复">
+    <n-modal v-model:show="dailySignin.display" preset="card" style="max-width: 540px" title="签到恢复">
       <template #header-extra>
         {{ new Date().toLocaleDateString() }}
       </template>
       <div v-if="dailySignin.rewards == null">
-        <span>更具您目前的神经记忆档案，您的这次签到的奖励为：</span> <br>
+        <span>更具您目前的神经记忆档案，您的这次签到的奖励为：</span> <br />
         <ol>
           <li>逻辑币 0 ~ {{ store.profile.user["level"] * 10 + 200 }}</li>
           <li>理智 {{ 86 + (store.profile.user["level"] - 1) * 2 }}</li>
@@ -251,7 +264,9 @@
           <li>分享令牌 {{ 10 + store.profile.user["level"] - 1 }}</li>
           <li>经验 1800</li>
         </ol>
-        <span><b>温馨提示</b> 若是使用了外置电源或静脉注射理智等恢复属性类药物，在签到恢复完成后溢出的效果将不复存在</span>
+        <span
+          ><b>温馨提示</b> 若是使用了外置电源或静脉注射理智等恢复属性类药物，在签到恢复完成后溢出的效果将不复存在</span
+        >
       </div>
       <div v-else>
         <span>签到完成 d(^_^o)，本次签到获得奖励：</span>
@@ -262,16 +277,18 @@
           <li>分享令牌 {{ dailySignin.rewards["ShareTicket"] }}</li>
           <li>经验 {{ dailySignin.rewards["Experience"] }}</li>
         </ol>
-        <span>下次签到开放时间在 <b>{{ new Date(new Date().setHours(24, 0, 0, 0)).toLocaleString() }}</b></span>
+        <span
+          >下次签到开放时间在 <b>{{ new Date(new Date().setHours(24, 0, 0, 0)).toLocaleString() }}</b></span
+        >
       </div>
       <template #footer>
         <n-space v-if="dailySignin.rewards == null" justify="end">
-          <n-button :loading="dailySignin.connecting" size="small" type="primary" @click="dailySignin.do()">立即签到
+          <n-button :loading="dailySignin.connecting" size="small" type="primary" @click="dailySignin.do()"
+            >立即签到
           </n-button>
         </n-space>
         <n-space v-else justify="end">
-          <n-button size="small" type="primary" @click="dailySignin.display = !dailySignin.display">签到成功
-          </n-button>
+          <n-button size="small" type="primary" @click="dailySignin.display = !dailySignin.display">签到成功 </n-button>
         </n-space>
       </template>
     </n-modal>
@@ -310,15 +327,15 @@ import {
   LayoutFilled,
   FireFilled,
 } from "@vicons/antd";
-import {TicketSharp} from "@vicons/ionicons5";
-import {PowerSharp} from "@vicons/material";
+import { TicketSharp } from "@vicons/ionicons5";
+import { PowerSharp } from "@vicons/material";
 import * as echarts from "echarts";
-import {inject, onMounted, reactive, ref, watch} from "vue";
-import {useStatusStore} from "../../stores/status";
+import { inject, onMounted, reactive, ref, watch } from "vue";
+import { useStatusStore } from "../../stores/status";
 import SimpleNumber from "../../utils/SimpleNumber";
 import UpgradeRequireCompute from "../../utils/UpgradeRequireCompute";
-import {Axios, AxiosResponse} from "axios";
-import {VueCookies} from "vue-cookies";
+import { Axios, AxiosResponse } from "axios";
+import { VueCookies } from "vue-cookies";
 
 const cookies = inject("$cookies") as VueCookies;
 const axios = inject("axios") as Axios;
@@ -334,8 +351,8 @@ const backpack: any = reactive({
       Rational: store.getMaterial("rational").amount,
       Energy: store.getMaterial("energy").amount,
       ShareTicket: store.getMaterial("share-ticket").amount,
-    }
-  }
+    };
+  },
 });
 
 const dailySignin = reactive({
@@ -344,13 +361,17 @@ const dailySignin = reactive({
   rewards: null,
   do: async () => {
     dailySignin.connecting = true;
-    let response: AxiosResponse
+    let response: AxiosResponse;
     // Do Daily SignIn
-    response = await axios.patch("/api/security/users/daily-signin", {}, {
-      headers: {Authorization: "Bearer " + cookies.get("access_token")},
-    });
+    response = await axios.patch(
+      "/api/security/users/daily-signin",
+      {},
+      {
+        headers: { Authorization: "Bearer " + cookies.get("access_token") },
+      }
+    );
     if (response.status === 200) {
-      dailySignin.rewards = response.data["Response"]
+      dailySignin.rewards = response.data["Response"];
     } else {
       message.error("无法进行神经签到，未知通信错误");
       dailySignin.connecting = false;
@@ -358,21 +379,21 @@ const dailySignin = reactive({
     }
     // Update profile
     response = await axios.get("/api/security/users/profile?detail=yes", {
-      headers: {Authorization: "Bearer " + cookies.get("access_token")},
+      headers: { Authorization: "Bearer " + cookies.get("access_token") },
     });
     const profile = response.data["Response"];
-    store.setUserProfile(
-        profile["User"],
-        profile["Group"],
-        profile["Backpack"]
-    );
+    store.setUserProfile(profile["User"], profile["Group"], profile["Backpack"]);
     dailySignin.connecting = false;
-  }
-})
+  },
+});
 
-watch(store.profile, () => {
-  backpack.init()
-}, {immediate: true, deep: true})
+watch(
+  store.profile,
+  () => {
+    backpack.init();
+  },
+  { immediate: true, deep: true }
+);
 
 const activities = reactive({
   data: [],
@@ -380,25 +401,33 @@ const activities = reactive({
   page: 1,
   fetch: async () => {
     let response: AxiosResponse;
-    response = await axios.get("/api/records/announcements", {headers: {Authorization: "Bearer " + cookies.get("access_token")}});
+    response = await axios.get("/api/records/announcements", {
+      headers: { Authorization: "Bearer " + cookies.get("access_token") },
+    });
     if (response.status != 200) {
-      message.error("无法获取神经节点通告")
+      message.error("无法获取神经节点通告");
     } else {
       activities.announcements = response.data["Response"];
     }
 
-    response = await axios.get("/api/records/activities", {headers: {Authorization: "Bearer " + cookies.get("access_token")}});
+    response = await axios.get("/api/records/activities", {
+      headers: { Authorization: "Bearer " + cookies.get("access_token") },
+    });
     if (response.status != 200) {
-      message.error("无法获取神经记忆活动记录")
+      message.error("无法获取神经记忆活动记录");
     } else {
       activities.data = response.data["Response"];
     }
-  }
-})
+  },
+});
 
-watch(store.profile, async () => {
-  await activities.fetch()
-}, {immediate: true, deep: true})
+watch(
+  store.profile,
+  async () => {
+    await activities.fetch();
+  },
+  { immediate: true, deep: true }
+);
 
 // Charts
 const chart: any = reactive({
@@ -432,20 +461,7 @@ const chart: any = reactive({
       {
         type: "category",
         boundaryGap: false,
-        data: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "June",
-          "July",
-          "Aug",
-          "Sept",
-          "Oct",
-          "Nov",
-          "Dec",
-        ],
+        data: ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"],
       },
     ],
     yAxis: [
