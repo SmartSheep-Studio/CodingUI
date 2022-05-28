@@ -39,17 +39,20 @@
         <n-space vertical :size="24">
           <n-thing title="剧情"><div v-html="preview.previewing['data']['description']"></div></n-thing>
           <n-thing title="用例">
-            <n-space vertical>
-              <n-card
-                v-for="(item, index) in preview.previewing['data']['judgement']"
-                :key="index"
-                size="small"
-                :title="'样例 #' + (index + 1)"
-                ><n-space vertical
-                  ><n-card size="small" title="输入数据"><n-code :code="item['stdin']"></n-code></n-card
-                  ><n-card size="small" title="输出数据"><n-code :code="item['stdout']"></n-code></n-card></n-space
-              ></n-card>
-            </n-space>
+            <n-card>
+              <n-collapse>
+                <n-collapse-item
+                  v-for="(item, index) in preview.previewing['data']['judgement']"
+                  :key="index"
+                  :name="'example' + index"
+                  size="small"
+                  :title="'样例 #' + (index + 1)"
+                  ><n-space vertical
+                    ><n-card hoverable size="small" title="输入数据"><n-code :code="item['stdin']"></n-code></n-card
+                    ><n-card hoverable size="small" title="输出数据"><n-code :code="item['stdout']"></n-code></n-card></n-space
+                ></n-collapse-item>
+              </n-collapse>
+            </n-card>
           </n-thing>
         </n-space>
         <template #footer><n-button type="primary" size="small">开始行动</n-button></template>
@@ -73,6 +76,8 @@ import {
   NButton,
   NDrawer,
   NDrawerContent,
+  NCollapse,
+  NCollapseItem,
   NCode,
   useMessage,
 } from "naive-ui";
