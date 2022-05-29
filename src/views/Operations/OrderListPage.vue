@@ -2,6 +2,47 @@
   <div class="container">
     <n-grid :x-gap="16" :y-gap="16">
       <n-grid-item :span="24">
+        <n-card title="行动记录">
+          <n-space align="center" justify="space-between" style="padding-right: 10px; padding-left: 10px">
+            <div>
+              <n-checkbox v-model:checked="filter.working">仅未关闭</n-checkbox>
+            </div>
+            <div>
+              <n-button :loading="connecting" size="small" type="primary" @click="operations.fetch()"
+              >重新获取
+              </n-button
+              >
+            </div>
+          </n-space>
+          <n-list bordered>
+            <n-list-item v-if="operations.records.length === 0">
+              <n-empty description="目前没有任何行动记录"/>
+            </n-list-item>
+            <n-list-item v-for="(item, index) in operations.records.slice(0, 3)" v-else :key="index">
+              <n-thing
+                  :title="item['operation']"
+                  :title-extra="new Date(item['created_at']).toLocaleString()"
+              >
+                <template #description
+                >
+                  <n-space justify="space-between"
+                  ><span>
+                    <n-tag v-if="item['status'] === 'finished'" type="success">行动成功</n-tag>
+                    <n-tag
+                        v-else-if="item['status'] === 'canceled'"
+                        type="error">行动取消</n-tag>
+                    <n-tag
+                        v-else type="info">行动中</n-tag>
+                  </span></n-space
+                  >
+                </template
+                >
+              </n-thing>
+            </n-list-item>
+          </n-list>
+        </n-card>
+      </n-grid-item>
+      <n-grid-item :span="24">
         <n-card title="订单列表">
           <n-space align="center" justify="space-between" style="padding-right: 10px; padding-left: 10px">
             <div>
@@ -51,12 +92,12 @@
             <div v-html="preview.previewing['data']['description']"></div>
           </n-thing>
           <n-thing title="消耗">
-              <n-list bordered>
-                <n-list-item v-for="(cost, index) in preview.previewing['costs']" :key="index">
-                  <span v-if="cost['id'] === 'rational'">理智</span>
-                  <template #suffix>{{ cost["amount"] }}</template>
-                </n-list-item>
-              </n-list>
+            <n-list bordered>
+              <n-list-item v-for="(cost, index) in preview.previewing['costs']" :key="index">
+                <span v-if="cost['id'] === 'rational'">理智</span>
+                <template #suffix>{{ cost["amount"] }}</template>
+              </n-list-item>
+            </n-list>
           </n-thing>
           <n-thing title="奖励">
             <n-list bordered>
@@ -110,7 +151,7 @@ import {
   NList,
   NListItem,
   NThing,
-  NEllipsis,
+  NTag,
   NSpace,
   NCheckbox,
   NButton,
@@ -145,18 +186,32 @@ const preview: any = reactive({
 });
 const filter = reactive({
   ignore: false,
+  working: false,
 });
 const operations = reactive({
   data: [],
+  records: [],
   fetch: async () => {
+    let response;
     connecting.value = true;
-    const response = await axios.get("/api/operations?ignore=" + (filter.ignore ? "yes" : "no"), {
+    // Get Available Operations
+    response = await axios.get("/api/operations?ignore=" + (filter.ignore ? "yes" : "no"), {
       headers: {Authorization: "Bearer " + cookies.get("access_token")},
     });
     if (response.status != 200) {
       message.error("无法获取现有行动");
     } else {
       operations.data = response.data["Response"];
+    }
+
+    // Get Operation Records
+    response = await axios.get("/api/operations/records?ignore=" + (!filter.working ? "yes" : "no"), {
+      headers: {Authorization: "Bearer " + cookies.get("access_token")},
+    });
+    if (response.status != 200) {
+      message.error("无法获取行动记录");
+    } else {
+      operations.records = response.data["Response"];
     }
     connecting.value = false;
   },
