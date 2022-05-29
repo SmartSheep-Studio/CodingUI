@@ -3,30 +3,40 @@
     <n-grid :x-gap="16" :y-gap="16">
       <n-grid-item :span="24">
         <n-card title="订单列表">
-          <n-space justify="space-between" align="center" style="padding-right: 10px; padding-left: 10px">
-            <div><n-checkbox v-model:checked="filter.ignore">忽略限制</n-checkbox></div>
+          <n-space align="center" justify="space-between" style="padding-right: 10px; padding-left: 10px">
             <div>
-              <n-button type="primary" size="small" @click="operations.fetch()" :loading="connecting"
-                >重新获取</n-button
+              <n-checkbox v-model:checked="filter.ignore">忽略限制</n-checkbox>
+            </div>
+            <div>
+              <n-button :loading="connecting" size="small" type="primary" @click="operations.fetch()"
+              >重新获取
+              </n-button
               >
             </div>
           </n-space>
           <n-list bordered>
-            <n-list-item v-for="(item, index) in operations.data" :key="index">
+            <n-list-item v-if="operations.data.length === 0">
+              <n-empty description="目前没有任何订单"/>
+            </n-list-item>
+            <n-list-item v-for="(item, index) in operations.data" v-else :key="index">
               <n-thing
-                @click="preview.preview(item)"
-                :title="item['data']['title']"
-                :title-extra="item['data']['category']"
+                  :title="item['data']['title']"
+                  :title-extra="item['data']['category']"
+                  @click="preview.preview(item)"
               >
                 <template #description
-                  ><n-space justify="space-between"
-                    ><span
-                      >需求等级 <b>Lv{{ item["conditions"]["level"] }}</b></span
-                    >
-                    <span
+                >
+                  <n-space justify="space-between"
+                  ><span
+                  ><span
+                  >需求等级 <b>Lv{{ item["conditions"]["level"] }}</b></span
+                  >&nbsp;
+                      <span
                       >需求关卡 <b>{{ item["conditions"]["progress"] }}</b></span
-                    ></n-space
-                  ></template
+                      ></span
+                  ><span>{{ item["id"] }}</span></n-space
+                  >
+                </template
                 >
               </n-thing>
             </n-list-item>
@@ -35,34 +45,64 @@
       </n-grid-item>
     </n-grid>
     <n-drawer v-model:show="preview.display" :width="680">
-      <n-drawer-content closable :title="preview.previewing['data']['title']">
-        <n-space vertical :size="24">
-          <n-thing title="剧情"><div v-html="preview.previewing['data']['description']"></div></n-thing>
+      <n-drawer-content :native-scrollbar="false" :title="preview.previewing['data']['title']" closable>
+        <n-space :size="24" vertical>
+          <n-thing title="剧情">
+            <div v-html="preview.previewing['data']['description']"></div>
+          </n-thing>
+          <n-thing title="消耗">
+              <n-list bordered>
+                <n-list-item v-for="(cost, index) in preview.previewing['costs']" :key="index">
+                  <span v-if="cost['id'] === 'rational'">理智</span>
+                  <template #suffix>{{ cost["amount"] }}</template>
+                </n-list-item>
+              </n-list>
+          </n-thing>
+          <n-thing title="奖励">
+            <n-list bordered>
+              <n-list-item v-for="(reward, index) in preview.previewing['rewards']" :key="index">
+                <span v-if="reward['id'] === 'code-coin'">逻辑币</span>
+                <template #suffix>{{ reward["amount"] }}</template>
+              </n-list-item>
+            </n-list>
+          </n-thing>
           <n-thing title="用例">
             <n-card>
               <n-collapse>
                 <n-collapse-item
-                  v-for="(item, index) in preview.previewing['data']['judgement']"
-                  :key="index"
-                  :name="'example' + index"
-                  size="small"
-                  :title="'样例 #' + (index + 1)"
-                  ><n-space vertical
-                    ><n-card hoverable size="small" title="输入数据"><n-code :code="item['stdin']"></n-code></n-card
-                    ><n-card hoverable size="small" title="输出数据"><n-code :code="item['stdout']"></n-code></n-card></n-space
-                ></n-collapse-item>
+                    v-for="(item, index) in preview.previewing['data']['judgement']"
+                    :key="index"
+                    :name="'example' + index"
+                    :title="'样例 #' + (index + 1)"
+                    size="small"
+                >
+                  <n-space vertical
+                  >
+                    <n-card hoverable size="small" title="输入数据">
+                      <n-code :code="item['stdin']"></n-code>
+                    </n-card
+                    >
+                    <n-card hoverable size="small" title="输出数据"
+                    >
+                      <n-code :code="item['stdout']"></n-code>
+                    </n-card>
+                  </n-space
+                  >
+                </n-collapse-item>
               </n-collapse>
             </n-card>
           </n-thing>
         </n-space>
-        <template #footer><n-button type="primary" size="small">开始行动</n-button></template>
+        <template #footer>
+          <n-button size="small" type="primary">开始行动</n-button>
+        </template>
       </n-drawer-content>
     </n-drawer>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Axios } from "axios";
+import {Axios} from "axios";
 import {
   NGrid,
   NGridItem,
@@ -79,11 +119,12 @@ import {
   NCollapse,
   NCollapseItem,
   NCode,
+  NEmpty,
   useMessage,
 } from "naive-ui";
-import { inject, reactive, ref, watch } from "vue";
-import { VueCookies } from "vue-cookies";
-import { useStatusStore } from "../../stores/status";
+import {inject, reactive, ref, watch} from "vue";
+import {VueCookies} from "vue-cookies";
+import {useStatusStore} from "../../stores/status";
 
 const cookies = inject("$cookies") as VueCookies;
 const message = useMessage();
@@ -97,8 +138,8 @@ const preview: any = reactive({
     preview.display = true;
     preview.previewing = item;
     preview.previewing["data"]["description"] = preview.previewing["data"]["description"].replace(
-      "{DOCTOR_NAME}",
-      store.profile.user["username"]
+        "{DOCTOR_NAME}",
+        store.profile.user["username"]
     );
   },
 });
@@ -110,7 +151,7 @@ const operations = reactive({
   fetch: async () => {
     connecting.value = true;
     const response = await axios.get("/api/operations?ignore=" + (filter.ignore ? "yes" : "no"), {
-      headers: { Authorization: "Bearer " + cookies.get("access_token") },
+      headers: {Authorization: "Bearer " + cookies.get("access_token")},
     });
     if (response.status != 200) {
       message.error("无法获取现有行动");
@@ -122,11 +163,11 @@ const operations = reactive({
 });
 
 watch(
-  store.profile,
-  async () => {
-    await operations.fetch();
-  },
-  { immediate: true, deep: true }
+    store.profile,
+    async () => {
+      await operations.fetch();
+    },
+    {immediate: true, deep: true}
 );
 </script>
 
