@@ -21,7 +21,12 @@ export default VueRouter.createRouter({
                 {
                     path: "operations/orders",
                     name: "Operation.Orders",
-                    component: () => import("../views/Operations/OrderListPage.vue")
+                    component: () => import("../views/Operations/OperationListPage.vue")
+                },
+                {
+                    path: "operations/execute",
+                    name: "Operation.Execute",
+                    component: () => import("../views/Operations/OperationExecutePage.vue")
                 },
             ]
         },

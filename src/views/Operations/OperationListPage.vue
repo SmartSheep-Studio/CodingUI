@@ -4,9 +4,9 @@
       <n-grid-item :span="24">
         <n-card title="行动记录">
           <n-space align="center" justify="space-between" style="padding-right: 10px; padding-left: 10px">
-            <div>
-              <n-checkbox v-model:checked="filter.working">仅未关闭</n-checkbox>
-            </div>
+            <n-space>
+              <n-checkbox v-model:checked="filter.working">仅行动中</n-checkbox>
+            </n-space>
             <div>
               <n-button :loading="connecting" size="small" type="primary" @click="operations.fetch()"
               >重新获取
@@ -33,7 +33,7 @@
                         type="error">行动取消</n-tag>
                     <n-tag
                         v-else type="info">行动中</n-tag>
-                  </span></n-space
+                  </span><span>#{{ item['id'] }}</span></n-space
                   >
                 </template
                 >
@@ -45,9 +45,10 @@
       <n-grid-item :span="24">
         <n-card title="订单列表">
           <n-space align="center" justify="space-between" style="padding-right: 10px; padding-left: 10px">
-            <div>
+            <n-space>
               <n-checkbox v-model:checked="filter.ignore">忽略限制</n-checkbox>
-            </div>
+              <n-checkbox v-model:checked="filter.unfinished">仅未完成</n-checkbox>
+            </n-space>
             <div>
               <n-button :loading="connecting" size="small" type="primary" @click="operations.fetch()"
               >重新获取
@@ -186,22 +187,34 @@ const preview: any = reactive({
 });
 const filter = reactive({
   ignore: false,
+  unfinished: true,
   working: false,
 });
 const operations = reactive({
   data: [],
   records: [],
+  progress: [],
   fetch: async () => {
     let response;
     connecting.value = true;
     // Get Available Operations
-    response = await axios.get("/api/operations?ignore=" + (filter.ignore ? "yes" : "no"), {
+    response = await axios.get("/api/operations?ignore=" + (filter.ignore ? "yes" : "no") + "&unfinished=" + (filter.unfinished ? "yes" : "no"), {
       headers: {Authorization: "Bearer " + cookies.get("access_token")},
     });
     if (response.status != 200) {
       message.error("无法获取现有行动");
     } else {
       operations.data = response.data["Response"];
+    }
+
+    // Get Operation Progress
+    response = await axios.get("/api/operations/progress?simple=yes", {
+      headers: {Authorization: "Bearer " + cookies.get("access_token")},
+    });
+    if (response.status != 200) {
+      message.error("无法获取现有行动进度");
+    } else {
+      operations.progress = response.data["Response"];
     }
 
     // Get Operation Records

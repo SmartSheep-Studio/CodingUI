@@ -18,7 +18,7 @@
           />
         </n-gi>
         <n-gi :span="6">
-          <div style="padding: 16px; float: right; padding-right: 30px">
+          <div style="float: right; padding: 16px 30px 16px 16px;">
             <div v-if="!cookies.isKey('access_token')">
               <n-button
                 type="primary"

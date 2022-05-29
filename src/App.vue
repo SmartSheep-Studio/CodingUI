@@ -39,7 +39,7 @@ import hljs from 'highlight.js/lib/core'
 }
 
 .container-size {
-  min-height: calc(100vh - 70px);
+  min-height: calc(100vh - 64px);
   min-width: 100vw;
 }
 </style>

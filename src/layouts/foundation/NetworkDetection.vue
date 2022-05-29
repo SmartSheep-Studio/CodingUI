@@ -137,8 +137,6 @@ async function fetchUserProfile() {
   });
   if (response.status === 401) {
     message.error("神经授权失效，请重新验证身份");
-    cookies.remove("access_token");
-    router.push({name: "User.Entry.SignIn"});
   } else if (response.data["Response"]["Lock"] != null) {
     status.error.isHappened = true;
     status.error.summary = "神经档案被锁定，无法使用 🔒";
@@ -161,6 +159,9 @@ axios.interceptors.response.use((response) => {
     status.error.isHappened = true;
     status.error.summary = "神经连接被拒 🚧";
     status.error.detail = "有时候，喝杯茶，休息一下也不为过 ♨️";
+  } else if (response.status === 401) {
+    cookies.remove("access_token");
+    router.push({name: "User.Entry.SignIn"}).then(() => router.go(0));
   }
   return response;
 })
