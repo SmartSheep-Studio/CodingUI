@@ -15,10 +15,10 @@
             </div>
           </n-space>
           <n-list bordered>
-            <n-list-item v-if="operations.records.length === 0">
+            <n-list-item v-if="operations.logs.length === 0">
               <n-empty description="目前没有任何行动记录"/>
             </n-list-item>
-            <n-list-item v-for="(item, index) in operations.records.slice(0, 3)" v-else :key="index">
+            <n-list-item v-for="(item, index) in operations.logs.slice(0, 3)" v-else :key="index">
               <n-thing
                   :title="item['operation']"
                   :title-extra="new Date(item['created_at']).toLocaleString()"
@@ -62,8 +62,8 @@
             </n-list-item>
             <n-list-item v-for="(item, index) in operations.data" v-else :key="index">
               <n-thing
-                  :title="item['data']['title']"
-                  :title-extra="item['data']['category']"
+                  :title="item['title']"
+                  :title-extra="item['category']"
                   @click="preview.preview(item)"
               >
                 <template #description
@@ -87,10 +87,13 @@
       </n-grid-item>
     </n-grid>
     <n-drawer v-model:show="preview.display" :width="680">
-      <n-drawer-content :native-scrollbar="false" :title="preview.previewing['data']['title']" closable>
+      <n-drawer-content :native-scrollbar="false" :title="preview.previewing['title']" closable>
         <n-space :size="24" vertical>
           <n-thing title="剧情">
-            <div v-html="preview.previewing['data']['description']"></div>
+            <div v-html="preview.previewing['story']"></div>
+          </n-thing>
+          <n-thing title="简介" v-if="preview.previewing['description'] !== ''">
+            <div v-html="preview.previewing['description']"></div>
           </n-thing>
           <n-thing title="消耗">
             <n-list bordered>
@@ -112,7 +115,7 @@
             <n-card>
               <n-collapse>
                 <n-collapse-item
-                    v-for="(item, index) in preview.previewing['data']['judgement']"
+                    v-for="(item, index) in preview.previewing['judgement']"
                     :key="index"
                     :name="'example' + index"
                     :title="'样例 #' + (index + 1)"
@@ -179,7 +182,11 @@ const preview: any = reactive({
   preview: (item: object) => {
     preview.display = true;
     preview.previewing = item;
-    preview.previewing["data"]["description"] = preview.previewing["data"]["description"].replace(
+    preview.previewing["story"] = preview.previewing["story"].replace(
+        "{DOCTOR_NAME}",
+        store.profile.user["username"]
+    );
+    preview.previewing["description"] = preview.previewing["description"].replace(
         "{DOCTOR_NAME}",
         store.profile.user["username"]
     );
@@ -192,7 +199,7 @@ const filter = reactive({
 });
 const operations = reactive({
   data: [],
-  records: [],
+  logs: [],
   progress: [],
   fetch: async () => {
     let response;
@@ -218,13 +225,13 @@ const operations = reactive({
     }
 
     // Get Operation Records
-    response = await axios.get("/api/operations/records?ignore=" + (!filter.working ? "yes" : "no"), {
+    response = await axios.get("/api/operations/logs?ignore=" + (!filter.working ? "yes" : "no"), {
       headers: {Authorization: "Bearer " + cookies.get("access_token")},
     });
     if (response.status != 200) {
       message.error("无法获取行动记录");
     } else {
-      operations.records = response.data["Response"];
+      operations.logs = response.data["Response"];
     }
     connecting.value = false;
   },
