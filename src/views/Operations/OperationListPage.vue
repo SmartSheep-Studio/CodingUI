@@ -18,7 +18,10 @@
             <n-list-item v-if="operations.logs.length === 0">
               <n-empty description="目前没有任何行动记录"/>
             </n-list-item>
-            <n-list-item v-for="(item, index) in operations.logs.slice(0, 3)" v-else :key="index">
+            <n-list-item v-for="(item, index) in operations.logs.slice(
+                (operations.pagination.logs - 1) * 3,
+                (operations.pagination.logs - 1) * 3 + 3
+              )" v-else :key="index">
               <n-thing
                   :title="item['operation']"
                   :title-extra="new Date(item['created_at']).toLocaleString()"
@@ -40,6 +43,9 @@
               </n-thing>
             </n-list-item>
           </n-list>
+          <n-space justify="center">
+            <n-pagination v-model:page="operations.pagination.logs" :page-count="Math.ceil(operations.logs.length / 3)"/>
+          </n-space>
         </n-card>
       </n-grid-item>
       <n-grid-item :span="24">
@@ -60,7 +66,10 @@
             <n-list-item v-if="operations.data.length === 0">
               <n-empty description="目前没有任何订单"/>
             </n-list-item>
-            <n-list-item v-for="(item, index) in operations.data" v-else :key="index">
+            <n-list-item v-for="(item, index) in operations.data.slice(
+                (operations.pagination.operations - 1) * 10,
+                (operations.pagination.operations - 1) * 10 + 10
+              )" v-else :key="index">
               <n-thing
                   :title="item['title']"
                   :title-extra="item['category']"
@@ -83,6 +92,9 @@
               </n-thing>
             </n-list-item>
           </n-list>
+          <n-space justify="center">
+            <n-pagination v-model:page="operations.pagination.operations" :page-count="Math.ceil(operations.data.length / 10)"/>
+          </n-space>
         </n-card>
       </n-grid-item>
     </n-grid>
@@ -165,6 +177,7 @@ import {
   NCollapseItem,
   NCode,
   NEmpty,
+  NPagination,
   useMessage,
 } from "naive-ui";
 import {inject, reactive, ref, watch} from "vue";
@@ -201,6 +214,10 @@ const operations = reactive({
   data: [],
   logs: [],
   progress: [],
+  pagination: {
+    logs: 1,
+    operations: 1,
+  },
   fetch: async () => {
     let response;
     connecting.value = true;
