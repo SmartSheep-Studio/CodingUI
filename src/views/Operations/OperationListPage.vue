@@ -181,8 +181,12 @@ const preview: any = reactive({
     });
     if (response.status === 402) {
       message.warning("无法开展行动，资源或者行动槽位不足，请检查行动消耗")
-    } else if (response.status === 402) {
-      message.error("无法开展行动，找不到目标行动或者行动已终止，请刷新行动列表")
+    } else if (response.status === 400) {
+      if(response.data["Status"]["Code"] === "OPERATION_STARTED") {
+        message.warning("无法开展行动，此行动已经正在进行中")
+      } else {
+        message.error("无法开展行动，找不到目标行动或者行动已终止，请刷新行动列表")
+      }
     } else {
       message.success("行动成功开展")
       router.push({ name: "Operation.Execute", query: { id: response.data["Response"]["id"] } })
