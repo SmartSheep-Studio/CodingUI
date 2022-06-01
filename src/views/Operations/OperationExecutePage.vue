@@ -208,7 +208,7 @@ const operation: any = reactive({
         return
       }
       message.success("成功提交代码，但模拟用例未通过，请重新检查")
-      operation.commits.push(response.data["Response"])
+      operation.commits.push({code: editor.content, data: response.data["Response"]})
     }
   },
 });
