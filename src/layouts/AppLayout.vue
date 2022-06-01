@@ -39,7 +39,6 @@
               >
                 <n-avatar
                   :size="32"
-                  src="https://avatars.githubusercontent.com/u/56875315?s=96&v=4"
                 />
               </n-dropdown>
             </div>
