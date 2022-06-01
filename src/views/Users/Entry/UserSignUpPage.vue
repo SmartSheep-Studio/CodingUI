@@ -25,7 +25,6 @@
               <n-input
                   v-model:value="data.email"
                   placeholder="Your email address"
-                  type="email"
               ></n-input>
             </n-form-item>
             <n-form-item label="Birthday">
@@ -143,10 +142,8 @@ import {
 } from "naive-ui";
 import {inject, reactive, ref} from "vue";
 import {VueCookies} from "vue-cookies";
-import {useRouter} from "vue-router";
 
 const axios = inject("axios") as Axios;
-const router = useRouter();
 const message = useMessage();
 const cookies = inject("$cookies") as VueCookies;
 const form = ref<FormInst | null>(null);
@@ -163,7 +160,7 @@ const data: any = reactive({
   agreement02: false,
   automaticSignin: true,
 });
-const rules = {
+const rules: any = {
   username: {
     required: true,
     message: "Enter your username or email please.",
