@@ -1,21 +1,13 @@
 <template>
   <div>
     <div v-if="status.connecting">
-      <div
-          style="display: flex; align-items: center; height: 100vh; width: 100vw;"
-      >
+      <div style="display: flex; align-items: center; height: 100vh; width: 100vw">
         <div style="margin: auto; text-align: center">
           <div id="title">
-            <img
-                height="100"
-                src="../../assets/codingland_logo_text.svg"
-                width="180"
-            />
+            <img height="100" src="../../assets/codingland_logo_text.svg" width="180" />
           </div>
           <div id="description" style="font-size: 15px; color: #808080">
-            <span v-if="status.step === 0"
-            >正在与神经网络节点建立连接 🔗</span
-            >
+            <span v-if="status.step === 0">正在与神经网络节点建立连接 🔗</span>
             <span v-if="status.step === 1">正在读取您的神经记忆 🤔️</span>
           </div>
           <div id="progress" style="padding-top: 16px">
@@ -25,16 +17,10 @@
       </div>
     </div>
     <div v-else-if="status.error.isHappened">
-      <div
-          style="display: flex; align-items: center; height: 100vh; width: 100vw;"
-      >
+      <div style="display: flex; align-items: center; height: 100vh; width: 100vw">
         <div style="margin: auto; text-align: center">
           <div id="title">
-            <img
-                height="100"
-                src="../../assets/codingland_logo_text.svg"
-                width="180"
-            />
+            <img height="100" src="../../assets/codingland_logo_text.svg" width="180" />
           </div>
           <div id="description" style="font-size: 15px">
             <span>{{ status.error.detail }}</span>
@@ -49,16 +35,10 @@
       <slot></slot>
     </div>
     <div v-else>
-      <div
-          style="display: flex; align-items: center; height: 100vh; width: 100vw;"
-      >
+      <div style="display: flex; align-items: center; height: 100vh; width: 100vw">
         <div style="margin: auto; text-align: center">
           <div id="title">
-            <img
-                height="100"
-                src="../../assets/codingland_logo_text.svg"
-                width="180"
-            />
+            <img height="100" src="../../assets/codingland_logo_text.svg" width="180" />
           </div>
           <div id="description" style="font-size: 15px">
             <span>{{ status.detail["Message"] }}</span>
@@ -73,14 +53,15 @@
 </template>
 
 <script lang="ts" setup>
-import {Axios, AxiosResponse} from "axios";
-import {NSpin, useMessage} from "naive-ui";
-import {inject, onMounted, reactive, watch} from "vue";
-import {VueCookies} from "vue-cookies";
-import {useRouter} from "vue-router";
-import {useStatusStore} from "../../stores/status";
+import { Axios, AxiosResponse } from "axios";
+import { NSpin, useMessage } from "naive-ui";
+import { inject, onMounted, reactive, watch } from "vue";
+import { VueCookies } from "vue-cookies";
+import { useRoute, useRouter } from "vue-router";
+import { useStatusStore } from "../../stores/status";
 
 const store = useStatusStore();
+const route = useRoute();
 const router = useRouter();
 const message = useMessage();
 const cookies = inject("$cookies") as VueCookies;
@@ -100,9 +81,9 @@ const status: any = reactive({
 async function connect() {
   try {
     let response: AxiosResponse;
-    response = await axios.get("/api", {timeout: 3000});
+    response = await axios.get("/api", { timeout: 3000 });
     if (response.data["Response"] == null) {
-      return
+      return;
     }
     if (response.data["Response"]["Services"] === "DOWN") {
       status.available = false;
@@ -110,19 +91,16 @@ async function connect() {
       return;
     } else {
       status.detail = response.data["Response"];
-      store.setNodeInformation(
-          response.data["Response"]["NodeName"],
-          response.data["Response"]["Details"]
-      );
+      store.setNodeInformation(response.data["Response"]["NodeName"], response.data["Response"]["Details"]);
     }
     if (cookies.isKey("access_token")) {
       status.step++;
-      await fetchUserProfile()
+      await fetchUserProfile();
     } else {
       status.connecting = false;
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     status.error.isHappened = true;
     status.error.summary = "通信错误 💥";
     status.error.detail = "无法检测到神经网络节点生命活动迹象，请检查通信桥梁是否正常 😣";
@@ -133,22 +111,16 @@ async function connect() {
 
 async function fetchUserProfile() {
   const response = await axios.get("/api/security/users/profile?detail=yes", {
-    headers: {Authorization: "Bearer " + cookies.get("access_token")},
+    headers: { Authorization: "Bearer " + cookies.get("access_token") },
   });
-  if (response.status === 401) {
-    message.error("神经授权失效，请重新验证身份");
-  } else if (response.data["Response"]["Lock"] != null) {
+  if (response.data["Response"]["Lock"] != null) {
     status.error.isHappened = true;
     status.error.summary = "神经档案被锁定，无法使用 🔒";
     status.error.detail = response.data["Response"]["Lock"]["description"];
     cookies.remove("access_token");
   } else {
     const profile = response.data["Response"];
-    store.setUserProfile(
-        profile["User"],
-        profile["Group"],
-        profile["Backpack"]
-    );
+    store.setUserProfile(profile["User"], profile["Group"], profile["Backpack"]);
     status.connecting = false;
   }
 }
@@ -161,10 +133,13 @@ axios.interceptors.response.use((response) => {
     status.error.detail = "有时候，喝杯茶，休息一下也不为过 ♨️";
   } else if (response.status === 401) {
     cookies.remove("access_token");
-    router.push({name: "User.Entry.SignIn"}).then(() => router.go(0));
+    message.error("无法进行神经连接验证，请重新验证身份");
+    if(route.name !== "User.Entry.SignIn") {
+      router.push({ name: "User.Entry.SignIn" });
+    }
   }
   return response;
-})
+});
 
 watch(store.node, () => {
   if (store.node.defense) {
@@ -174,7 +149,7 @@ watch(store.node, () => {
     status.error.detail = "有时候，喝杯茶，休息一下也不为过 ♨️";
     store.isDefenseNow(false);
   }
-})
+});
 
 onMounted(async () => {
   await connect();

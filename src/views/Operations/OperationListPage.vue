@@ -26,7 +26,6 @@
               :key="index"
             >
               <n-thing
-                :title="item['operation']"
                 :title-extra="new Date(item['created_at']).toLocaleString()"
                 @click="
                   () => {
@@ -36,6 +35,7 @@
                   }
                 "
               >
+                <template #header>{{ item["operation"] }}</template>
                 <template #description>
                   <n-space justify="space-between"
                     ><span>
@@ -59,15 +59,19 @@
       <n-grid-item :span="24">
         <n-card title="订单列表">
           <n-space align="center" justify="space-between" style="padding-right: 10px; padding-left: 10px">
-            <n-space>
+            <n-space size="small">
               <n-checkbox v-model:checked="filter.ignore">忽略限制</n-checkbox>
               <n-checkbox v-model:checked="filter.unfinished">仅未完成</n-checkbox>
+              <span
+                >章节 <span v-if="filter.chapter == null">未选择</span><span v-else>{{ filter.chapter }}</span></span
+              >
             </n-space>
-            <div>
+            <n-space>
+              <n-button @click="chapter.selector = !chapter.selector" size="small">选择章节</n-button>
               <n-button :loading="connecting" size="small" type="primary" @click="operations.fetch()"
                 >重新获取
               </n-button>
-            </div>
+            </n-space>
           </n-space>
           <n-list bordered>
             <n-list-item v-if="operations.data.length === 0">
@@ -81,7 +85,10 @@
               v-else
               :key="index"
             >
-              <n-thing :title="item['title']" :title-extra="item['category']" @click="preview.preview(item)">
+              <n-thing :title="item['title']" @click="preview.preview(item)">
+                <template #header-extra
+                  ><n-tag>{{ item["category"] }}</n-tag></template
+                >
                 <template #description>
                   <n-space justify="space-between"
                     ><n-space size="small"
@@ -92,9 +99,11 @@
                         >需求等级 <b>Lv{{ item["conditions"]["level"] }}</b></n-tag
                       >
                       <n-tag
-                        >需求关卡 <b>{{ item["conditions"]["progress"] }}</b></n-tag
+                        >需求进度 <b>Pr{{ item["conditions"]["progress"] }}</b></n-tag
                       ></n-space
-                    ><span>{{ item["id"] }}</span>
+                    ><span
+                      ><code>{{ item["id"] }}</code></span
+                    >
                   </n-space>
                 </template>
               </n-thing>
@@ -109,6 +118,8 @@
         </n-card>
       </n-grid-item>
     </n-grid>
+
+    <!-- Operation Preview Drawer -->
     <n-drawer v-model:show="preview.display" :width="680">
       <n-drawer-content :native-scrollbar="false" :title="preview.previewing['title']" closable>
         <n-space :size="24" vertical>
@@ -162,6 +173,80 @@
         </template>
       </n-drawer-content>
     </n-drawer>
+
+    <!-- Chapter Selector -->
+    <n-modal
+      v-model:show="chapter.selector"
+      class="custom-card"
+      preset="card"
+      title="章节选择"
+      style="max-width: 60vw"
+      :bordered="false"
+    >
+      <n-space
+        align="center"
+        justify="space-between"
+        style="padding-right: 10px; padding-left: 10px; padding-bottom: 20px"
+      >
+        <n-space>
+          <n-checkbox v-model:checked="filter.chapterIgnore">忽略限制</n-checkbox>
+        </n-space>
+        <n-space>
+          <n-button
+            size="small"
+            @click="
+              () => {
+                filter.chapter = null;
+                chapter.selector = !chapter.selector;
+              }
+            "
+            >清空选择</n-button
+          >
+          <n-button :loading="connecting" size="small" type="primary" @click="chapter.fetch()">重新获取</n-button>
+        </n-space>
+      </n-space>
+      <n-card>
+        <n-collapse accordion>
+          <n-collapse-item v-for="(item, index) in chapter.data.slice(
+                (operations.pagination.chapters - 1) * 3,
+                (operations.pagination.chapters - 1) * 3 + 3
+              )" :key="index" :title="item['id']">
+            <template #header-extra
+              ><n-tag>{{ item["category"] }}</n-tag></template
+            >
+            <div style="padding: 20px">
+              <n-thing title="剧情">
+                <div v-html="item['story']"></div>
+              </n-thing>
+              <n-thing title="简介" v-if="item['description'] !== ''">
+                <div v-html="item['description']"></div>
+              </n-thing>
+            </div>
+            <n-space justify="space-between">
+              <n-space
+                ><n-tag
+                  >所需等级 <b>Lv{{ item["data"]["level"] }}</b></n-tag
+                ><n-tag
+                  >所需进度 <b>Pr{{ item["data"]["progress"] }}</b></n-tag
+                ></n-space
+              >
+              <n-button
+                type="primary"
+                size="small"
+                @click="
+                  () => {
+                    filter.chapter = item['id'];
+                    chapter.selector = !chapter.selector;
+                  }
+                "
+                >选择此章节</n-button
+              >
+            </n-space>
+          </n-collapse-item>
+        </n-collapse>
+      </n-card>
+      <n-space justify="center" style="padding-top: 20px"><n-pagination v-model:page="operations.pagination.chapters" :page-count="Math.ceil(chapter.data.length / 3)" /></n-space>
+    </n-modal>
   </div>
 </template>
 
@@ -185,6 +270,7 @@ import {
   NCode,
   NEmpty,
   NPagination,
+  NModal,
   useMessage,
 } from "naive-ui";
 import { inject, reactive, ref, watch } from "vue";
@@ -198,6 +284,29 @@ const store = useStatusStore();
 const router = useRouter();
 const axios = inject("axios") as Axios;
 const connecting = ref(false);
+const filter = reactive({
+  ignore: false,
+  unfinished: true,
+  working: false,
+  chapter: null,
+  chapterIgnore: false,
+});
+const chapter: any = reactive({
+  data: [],
+  selector: false,
+  fetch: async () => {
+    connecting.value = true;
+    const response = await axios.get("/api/operations/chapter?ignore=" + (filter.chapterIgnore ? "yes" : "no"), {
+      headers: { Authorization: "Bearer " + cookies.get("access_token") },
+    });
+    if (response.status === 200) {
+      chapter.data = response.data["Response"];
+    } else {
+      message.error("获取章节列表失败");
+    }
+    connecting.value = false;
+  },
+});
 const preview: any = reactive({
   display: false,
   previewing: {},
@@ -234,11 +343,6 @@ const preview: any = reactive({
     connecting.value = false;
   },
 });
-const filter = reactive({
-  ignore: false,
-  unfinished: true,
-  working: false,
-});
 const operations = reactive({
   data: [],
   logs: [],
@@ -246,13 +350,18 @@ const operations = reactive({
   pagination: {
     logs: 1,
     operations: 1,
+    chapters: 1,
   },
   fetch: async () => {
     let response;
     connecting.value = true;
     // Get Available Operations
     response = await axios.get(
-      "/api/operations?ignore=" + (filter.ignore ? "yes" : "no") + "&unfinished=" + (filter.unfinished ? "yes" : "no"),
+      "/api/operations?ignore=" +
+        (filter.ignore ? "yes" : "no") +
+        "&unfinished=" +
+        (filter.unfinished ? "yes" : "no") +
+        (filter.chapter == null ? "" : "&chapter=" + filter.chapter),
       {
         headers: { Authorization: "Bearer " + cookies.get("access_token") },
       }
@@ -289,6 +398,7 @@ const operations = reactive({
 watch(
   store.profile,
   async () => {
+    await chapter.fetch();
     await operations.fetch();
   },
   { immediate: true, deep: true }

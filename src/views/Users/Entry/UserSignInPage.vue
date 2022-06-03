@@ -117,8 +117,6 @@ function submit(event: MouseEvent) {
           () => router.push({name: "Dashboard"}).then(() => router.go(0)),
           500
       );
-    } else if (response.status == 401) {
-      message.warning("Wrong username or password");
     } else {
       message.error("Unknown communication error. Try again later please!");
       console.error(response.data);
