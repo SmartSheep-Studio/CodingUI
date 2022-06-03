@@ -35,14 +35,14 @@
                   }
                 "
               >
-                <template #header>{{ item["operation"] }}</template>
+                <template #header><code>{{ item["operation"] }}</code></template>
                 <template #description>
                   <n-space justify="space-between"
                     ><span>
                       <n-tag v-if="item['status'] === 'finished'" type="success">行动成功</n-tag>
                       <n-tag v-else-if="item['status'] === 'canceled'" type="error">行动取消</n-tag>
                       <n-tag v-else type="info">行动可用</n-tag> </span
-                    ><span>#{{ item["id"] }}</span></n-space
+                    ><span><code>#{{ item["id"] }}</code></span></n-space
                   >
                 </template>
               </n-thing>
