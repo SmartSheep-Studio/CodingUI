@@ -8,7 +8,8 @@
               <n-checkbox v-model:checked="filter.working">仅行动中</n-checkbox>
             </n-space>
             <div>
-              <n-button :loading="connecting" size="small" type="primary" @click="operations.fetch()">重新获取
+              <n-button :loading="connecting" size="small" type="primary" @click="operations.fetch()"
+                >重新获取
               </n-button>
             </div>
           </n-space>
@@ -16,25 +17,42 @@
             <n-list-item v-if="operations.logs.length === 0">
               <n-empty description="目前没有任何行动记录" />
             </n-list-item>
-            <n-list-item v-for="(item, index) in operations.logs.slice(
-              (operations.pagination.logs - 1) * 3,
-              (operations.pagination.logs - 1) * 3 + 3
-            )" v-else :key="index">
-              <n-thing :title="item['operation']" :title-extra="new Date(item['created_at']).toLocaleString()"
-                @click="() => { if (item['status'] === 'working') { $router.push({ name: 'Operation.Execute', query: { id: item['id'] } }) } }">
+            <n-list-item
+              v-for="(item, index) in operations.logs.slice(
+                (operations.pagination.logs - 1) * 3,
+                (operations.pagination.logs - 1) * 3 + 3
+              )"
+              v-else
+              :key="index"
+            >
+              <n-thing
+                :title="item['operation']"
+                :title-extra="new Date(item['created_at']).toLocaleString()"
+                @click="
+                  () => {
+                    if (item['status'] === 'working') {
+                      $router.push({ name: 'Operation.Execute', query: { id: item['id'] } });
+                    }
+                  }
+                "
+              >
                 <template #description>
-                  <n-space justify="space-between"><span>
+                  <n-space justify="space-between"
+                    ><span>
                       <n-tag v-if="item['status'] === 'finished'" type="success">行动成功</n-tag>
                       <n-tag v-else-if="item['status'] === 'canceled'" type="error">行动取消</n-tag>
-                      <n-tag v-else type="info">行动可用</n-tag>
-                    </span><span>#{{ item['id'] }}</span></n-space>
+                      <n-tag v-else type="info">行动可用</n-tag> </span
+                    ><span>#{{ item["id"] }}</span></n-space
+                  >
                 </template>
               </n-thing>
             </n-list-item>
           </n-list>
           <n-space justify="center">
-            <n-pagination v-model:page="operations.pagination.logs"
-              :page-count="Math.ceil(operations.logs.length / 3)" />
+            <n-pagination
+              v-model:page="operations.pagination.logs"
+              :page-count="Math.ceil(operations.logs.length / 3)"
+            />
           </n-space>
         </n-card>
       </n-grid-item>
@@ -46,7 +64,8 @@
               <n-checkbox v-model:checked="filter.unfinished">仅未完成</n-checkbox>
             </n-space>
             <div>
-              <n-button :loading="connecting" size="small" type="primary" @click="operations.fetch()">重新获取
+              <n-button :loading="connecting" size="small" type="primary" @click="operations.fetch()"
+                >重新获取
               </n-button>
             </div>
           </n-space>
@@ -54,23 +73,38 @@
             <n-list-item v-if="operations.data.length === 0">
               <n-empty description="目前没有任何订单" />
             </n-list-item>
-            <n-list-item v-for="(item, index) in operations.data.slice(
-              (operations.pagination.operations - 1) * 10,
-              (operations.pagination.operations - 1) * 10 + 10
-            )" v-else :key="index">
+            <n-list-item
+              v-for="(item, index) in operations.data.slice(
+                (operations.pagination.operations - 1) * 10,
+                (operations.pagination.operations - 1) * 10 + 10
+              )"
+              v-else
+              :key="index"
+            >
               <n-thing :title="item['title']" :title-extra="item['category']" @click="preview.preview(item)">
                 <template #description>
-                  <n-space justify="space-between"><span><span>需求等级 <b>Lv{{ item["conditions"]["level"]
-                  }}</b></span>&nbsp;
-                      <span>需求关卡 <b>{{ item["conditions"]["progress"] }}</b></span></span><span>{{ item["id"] }}</span>
+                  <n-space justify="space-between"
+                    ><n-space size="small"
+                      ><n-tag v-if="item['finished']" type="success">已完成</n-tag
+                      ><n-tag v-else-if="item['unlocked']" type="info">已解锁</n-tag
+                      ><n-tag v-else type="error">未解锁</n-tag
+                      ><n-tag
+                        >需求等级 <b>Lv{{ item["conditions"]["level"] }}</b></n-tag
+                      >
+                      <n-tag
+                        >需求关卡 <b>{{ item["conditions"]["progress"] }}</b></n-tag
+                      ></n-space
+                    ><span>{{ item["id"] }}</span>
                   </n-space>
                 </template>
               </n-thing>
             </n-list-item>
           </n-list>
           <n-space justify="center">
-            <n-pagination v-model:page="operations.pagination.operations"
-              :page-count="Math.ceil(operations.data.length / 10)" />
+            <n-pagination
+              v-model:page="operations.pagination.operations"
+              :page-count="Math.ceil(operations.data.length / 10)"
+            />
           </n-space>
         </n-card>
       </n-grid-item>
@@ -103,8 +137,13 @@
           <n-thing title="用例">
             <n-card>
               <n-collapse>
-                <n-collapse-item v-for="(item, index) in preview.previewing['judgement']" :key="index"
-                  :name="'example' + index" :title="'样例 #' + (index + 1)" size="small">
+                <n-collapse-item
+                  v-for="(item, index) in preview.previewing['judgement']"
+                  :key="index"
+                  :name="'example' + index"
+                  :title="'样例 #' + (index + 1)"
+                  size="small"
+                >
                   <n-space vertical>
                     <n-card hoverable size="small" title="输入数据">
                       <n-code :code="item['stdin']"></n-code>
@@ -165,10 +204,7 @@ const preview: any = reactive({
   preview: (item: any) => {
     preview.display = true;
     preview.previewing = item;
-    preview.previewing["story"] = preview.previewing["story"].replace(
-      "{DOCTOR_NAME}",
-      store.profile.user["username"]
-    );
+    preview.previewing["story"] = preview.previewing["story"].replace("{DOCTOR_NAME}", store.profile.user["username"]);
     preview.previewing["description"] = preview.previewing["description"].replace(
       "{DOCTOR_NAME}",
       store.profile.user["username"]
@@ -176,23 +212,27 @@ const preview: any = reactive({
   },
   start: async () => {
     connecting.value = true;
-    const response = await axios.post("/api/operations/start", { id: preview.previewing["id"] }, {
-      headers: { Authorization: "Bearer " + cookies.get("access_token") },
-    });
+    const response = await axios.post(
+      "/api/operations/start",
+      { id: preview.previewing["id"] },
+      {
+        headers: { Authorization: "Bearer " + cookies.get("access_token") },
+      }
+    );
     if (response.status === 402) {
-      message.warning("无法开展行动，资源或者行动槽位不足，请检查行动消耗")
+      message.warning("无法开展行动，资源或者行动槽位不足，请检查行动消耗");
     } else if (response.status === 400) {
-      if(response.data["Status"]["Code"] === "OPERATION_STARTED") {
-        message.warning("无法开展行动，此行动已经正在进行中")
+      if (response.data["Status"]["Code"] === "OPERATION_STARTED") {
+        message.warning("无法开展行动，此行动已经正在进行中");
       } else {
-        message.error("无法开展行动，找不到目标行动或者行动已终止，请刷新行动列表")
+        message.error("无法开展行动，找不到目标行动或者行动已终止，请刷新行动列表");
       }
     } else {
-      message.success("行动成功开展")
-      router.push({ name: "Operation.Execute", query: { id: response.data["Response"]["id"] } })
+      message.success("行动成功开展");
+      router.push({ name: "Operation.Execute", query: { id: response.data["Response"]["id"] } });
     }
     connecting.value = false;
-  }
+  },
 });
 const filter = reactive({
   ignore: false,
@@ -211,9 +251,12 @@ const operations = reactive({
     let response;
     connecting.value = true;
     // Get Available Operations
-    response = await axios.get("/api/operations?ignore=" + (filter.ignore ? "yes" : "no") + "&unfinished=" + (filter.unfinished ? "yes" : "no"), {
-      headers: { Authorization: "Bearer " + cookies.get("access_token") },
-    });
+    response = await axios.get(
+      "/api/operations?ignore=" + (filter.ignore ? "yes" : "no") + "&unfinished=" + (filter.unfinished ? "yes" : "no"),
+      {
+        headers: { Authorization: "Bearer " + cookies.get("access_token") },
+      }
+    );
     if (response.status != 200) {
       message.error("无法获取现有行动");
     } else {
@@ -252,5 +295,4 @@ watch(
 );
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
