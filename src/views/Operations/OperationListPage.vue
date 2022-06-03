@@ -333,6 +333,8 @@ const preview: any = reactive({
     } else if (response.status === 400) {
       if (response.data["Status"]["Code"] === "OPERATION_STARTED") {
         message.warning("无法开展行动，此行动已经正在进行中");
+      } else if(response.data["Status"]["CodeDetail"] === "DISSATISFY_THE_CONDITIONS") {
+        message.warning("不满足开展条件要求，请满足该行动条件后重试")
       } else {
         message.error("无法开展行动，找不到目标行动或者行动已终止，请刷新行动列表");
       }
