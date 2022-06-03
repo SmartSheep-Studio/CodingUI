@@ -1,16 +1,44 @@
-# Vue 3 + TypeScript + Vite
+# CodingUI
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Front-end of CodingLand
 
-## Recommended IDE Setup
+**Currently in the alpha development stage(inner test), a lot of features are not implemented, very unstable, not recommend to deploy to product environment and public test!**
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+**We are looking for the translator!**
 
-## Type Support For `.vue` Imports in TS
+**Recommend use `pnpm` to manage package, use disk space efficient!**
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+## Start up
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
+### Development
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+```bash
+# ...start codingserve
+pnpm i
+pnpm dev
+```
+
+### Build
+
+```bash
+pnpm i
+pnpm run build
+# ...rename dist to ui
+# ...copy ui to codingserve project root
+```
+
+## Project Structure
+
+- `.vscode` settings for vscode
+- `public` root of web page
+- `src/assets` includes videos and images
+- `src/compoments` useful compoments
+- `src/layouts` templates for router view
+- `src/routes` vue router configure files
+- `src/stores` pinia configure files
+- `src/utils` useful functions
+- `src/views` page compoments
+
+## Technology Stack
+
+Vue3(Template and renderer) + Vue Router(Navigating everything) + Vite(Builder like webpack) + Pinia(Store user profile) + NaiveUI(Provide compoments) + CSS(Just pure css) + TypeScript(Better than javascript) + Piston(Code runner)
