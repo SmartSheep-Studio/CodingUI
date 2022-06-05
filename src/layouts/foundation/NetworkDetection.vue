@@ -63,7 +63,6 @@ import { useStatusStore } from "../../stores/status";
 const store = useStatusStore();
 const route = useRoute();
 const router = useRouter();
-const message = useMessage();
 const cookies = inject("$cookies") as VueCookies;
 const axios = inject("axios") as Axios;
 const status: any = reactive({
@@ -133,9 +132,11 @@ axios.interceptors.response.use((response) => {
     status.error.detail = "有时候，喝杯茶，休息一下也不为过 ♨️";
   } else if (response.status === 401) {
     cookies.remove("access_token");
-    message.error("无法进行神经连接验证，请重新验证身份");
-    if(route.name !== "User.Entry.SignIn") {
-      router.push({ name: "User.Entry.SignIn" });
+    if (route.name !== "User.Entry.SignIn") {
+      router.push({
+        name: "User.Entry.SignIn",
+        params: { redirect: route.name as string, message: "神经档案授权失效，请尝试重新授权" },
+      });
     }
   }
   return response;

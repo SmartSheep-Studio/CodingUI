@@ -1,7 +1,7 @@
 import * as VueRouter from "vue-router"
 
 export default VueRouter.createRouter({
-    history: VueRouter.createWebHashHistory(),
+    history: VueRouter.createWebHistory(),
     routes: [
         {
             path: "/", component: () => import("../layouts/AppLayout.vue"), children: [
